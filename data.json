@@ -330,6 +330,18 @@
       "end": "2027-01-08"
     },
     {
+      "id": "8.1",
+      "name": "test",
+      "type": "task",
+      "start": "2026-11-13",
+      "end": "2026-11-26",
+      "baselineStart": "2026-11-13",
+      "baselineEnd": "2026-11-26",
+      "owners": [],
+      "progress": 0,
+      "notes": ""
+    },
+    {
       "type": "task",
       "owners": [
         "s1",
@@ -364,6 +376,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:59:28.606Z",
+      "user": "MichalS-AI",
+      "text": "Dodano zadanie 8.1 „test” (13.11.2026–26.11.2026)"
+    },
     {
       "ts": "2026-11-13T13:51:49.654Z",
       "user": "jakubgasiorowski2lo1-pixel",
