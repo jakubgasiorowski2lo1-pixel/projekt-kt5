@@ -50,20 +50,6 @@
         "s2"
       ],
       "progress": 0,
-      "notes": "Potrzebne do programowania:\n- sposób działania i kolejność pracy linii (zad. I)\n- wybrany sterownik, czujniki i elementy wykonawcze (zad. II)\n- połączenia oraz lista wejść i wyjść PLC (zad. V)\n- działanie siłowników i zaworów (zad. VI)\nSzacowany czas: 40 h.",
-      "baselineStart": "2026-11-16",
-      "baselineEnd": "2027-01-23",
-      "id": "5",
-      "name": "Program PLC",
-      "start": "2026-11-16",
-      "end": "2027-01-23"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s2"
-      ],
-      "progress": 0,
       "notes": "Potrzebne do programowania:\n- sposób działania i kolejność pracy linii (zad. I)\n- wybrany sterownik, czujniki i elementy wykonawcze (zad. II)\n- połączenia oraz lista wejść i wyjść PLC (zad. V)\n- działanie siłowników i zaworów (zad. VI)\nSzacowany czas: 4 h.\nZależy od: „Start realizacji zadań”.",
       "baselineStart": "2026-11-16",
       "baselineEnd": "2026-11-23",
@@ -216,6 +202,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:09.453Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5 „Program PLC”"
+    },
     {
       "ts": "2026-11-13T13:37:36.428Z",
       "user": "MichalS-AI",
