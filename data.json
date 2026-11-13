@@ -148,18 +148,18 @@
       "end": "2026-11-27"
     },
     {
-      "id": "3.4",
-      "name": "Określenie warunków bezpieczeństwa",
       "type": "task",
-      "start": "2026-11-27",
-      "end": "2026-11-27",
-      "baselineStart": "2026-11-27",
-      "baselineEnd": "2026-11-27",
       "owners": [
         "s5"
       ],
       "progress": 0,
-      "notes": ""
+      "notes": "",
+      "baselineStart": "2026-11-27",
+      "baselineEnd": "2026-11-27",
+      "id": "3.4",
+      "name": "Określenie warunków bezpieczeństwa",
+      "start": "2026-11-27",
+      "end": "2026-11-27"
     },
     {
       "type": "task",
@@ -178,6 +178,20 @@
       "name": "Lista i koszty elementów układu",
       "start": "2026-12-04",
       "end": "2026-12-11"
+    },
+    {
+      "id": "4.1",
+      "name": "Dobór elementów i kosztorys",
+      "type": "task",
+      "start": "2026-12-04",
+      "end": "2026-12-11",
+      "baselineStart": "2026-12-04",
+      "baselineEnd": "2026-12-11",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
     },
     {
       "type": "task",
@@ -449,6 +463,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:10:16.695Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Dodano zadanie 4.1 „Dobór elementów i kosztorys” (4.12.2026–11.12.2026)"
+    },
     {
       "ts": "2026-11-13T14:09:33.326Z",
       "user": "jakubgasiorowski2lo1-pixel",
