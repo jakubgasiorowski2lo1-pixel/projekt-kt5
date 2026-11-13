@@ -120,8 +120,22 @@
       "end": "2026-11-27"
     },
     {
+      "type": "task",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": "",
+      "baselineStart": "2026-11-27",
+      "baselineEnd": "2026-11-27",
       "id": "3.2",
       "name": "Określenie funkcji i trybów pracy",
+      "start": "2026-11-27",
+      "end": "2026-11-27"
+    },
+    {
+      "id": "3.3",
+      "name": "Określenie sekwencji działania układu",
       "type": "task",
       "start": "2026-11-27",
       "end": "2026-11-27",
@@ -421,6 +435,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:09:02.813Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Dodano zadanie 3.3 „Określenie sekwencji działania układu” (27.11.2026–27.11.2026)"
+    },
     {
       "ts": "2026-11-13T14:08:35.860Z",
       "user": "jakubgasiorowski2lo1-pixel",
