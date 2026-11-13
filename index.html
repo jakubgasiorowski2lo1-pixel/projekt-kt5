@@ -55,6 +55,8 @@
     <span><i class="lg lg-buffer"></i>bufor</span>
     <span><i class="lg lg-bufused"></i>zużyta część bufora</span>
     <span><i class="lg lg-ghost"></i>pierwotny plan</span>
+    <span><i class="lg lg-class"></i>zajęcia (piątki)</span>
+    <span><i class="lg lg-noclass"></i>brak zajęć</span>
     <span><i class="lg lg-today"></i>dziś</span>
   </section>
 
@@ -115,6 +117,7 @@
         <legend>Osoby</legend>
         <div id="ownerChecks" class="owners"></div>
       </fieldset>
+      <label class="task-only">Szacowany czas (godziny) <input type="number" name="hours" min="0" step="0.5" placeholder="np. 4"></label>
       <label class="task-only">Postęp: <output id="progOut">0%</output>
         <input type="range" name="progress" min="0" max="100" step="5">
       </label>

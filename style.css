@@ -94,6 +94,8 @@ body.can-edit .editor-only { display: inline-block; }
 .bar .seg.slip { background: repeating-linear-gradient(45deg, var(--slip) 0 5px, #fdba74 5px 10px); }
 .bar .prog { position: absolute; left: 0; top: 0; bottom: 0; background: var(--c); opacity: .9; }
 .bar .bar-txt { position: absolute; left: 6px; top: 3px; font-size: 11px; font-weight: 600; color: #0f172a; text-shadow: 0 0 2px #fff, 0 0 2px #fff; white-space: nowrap; }
+.bar.narrow { overflow: visible; }
+.bar.narrow .bar-txt { left: calc(100% + 4px); }
 .bar.st-done .prog { background: var(--ok); }
 .bar.st-late { box-shadow: 0 0 0 2px var(--late) inset; }
 .bar.st-risk { box-shadow: 0 0 0 2px var(--risk) inset; }
@@ -107,6 +109,11 @@ body.can-edit .editor-only { display: inline-block; }
 .bar.buffer.over .buf-used { background: var(--late); }
 .row.is-buffer .label { background: #f8fafc; }
 
+.classday, .noclass { position: absolute; top: 46px; bottom: 0; z-index: 1; pointer-events: none; }
+.classday { background: rgba(37, 99, 235, .10); border-left: 1px solid rgba(37,99,235,.25); border-right: 1px solid rgba(37,99,235,.25); }
+.noclass { background: repeating-linear-gradient(45deg, rgba(100,116,139,.18) 0 3px, transparent 3px 6px); }
+.lg-class { background: rgba(37, 99, 235, .18); border: 1px solid rgba(37,99,235,.35); width: 10px; }
+.lg-noclass { background: repeating-linear-gradient(45deg, rgba(100,116,139,.45) 0 2px, transparent 2px 4px); width: 10px; }
 .today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--late); z-index: 2; pointer-events: none; }
 .deadline { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed #0f172a; z-index: 2; pointer-events: none; }
 

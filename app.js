@@ -343,10 +343,11 @@
           `Termin: ${fmt(t.start)} – ${fmt(t.end)}`,
           i.slipDays ? `Obsuwa: +${days(i.slipDays)} (plan: do ${fmt(t.baselineEnd)})` : "",
           `Postęp: ${t.progress}% (oczekiwany ~${i.expected}%)`,
+          t.hours ? `Szacowany czas: ${t.hours} h` : "",
           i.lateDays ? `Po terminie od ${days(i.lateDays)}` : "",
           `Osoby: ${ownersLabel(t)}`
         ].filter(Boolean).join("\n");
-        const bar = el("div", { class: `bar st-${i.status}` + (t.unplanned ? " unplanned" : ""), style: `left:${x(s)}px;width:${(e - s + 1) * dayW}px;--c:${color}`, title: tip });
+        const bar = el("div", { class: `bar st-${i.status}` + (t.unplanned ? " unplanned" : "") + ((e - s + 1) * dayW < 40 ? " narrow" : ""), style: `left:${x(s)}px;width:${(e - s + 1) * dayW}px;--c:${color}`, title: tip });
         const planW = planEnd >= s ? (planEnd - s + 1) / (e - s + 1) * 100 : 0;
         bar.append(el("div", { class: "seg plan", style: `width:${planW}%` }));
         if (i.slipDays) bar.append(el("div", { class: "seg slip", style: `left:${planW}%;width:${100 - planW}%` }));
@@ -363,7 +364,7 @@
         el("span", { class: "tid" }, t.id),
         el("span", { class: "tname" + (depth ? "" : " top-level") }, t.name, t.unplanned ? el("span", { class: "tag" }, "niezapl.") : ""),
         badge,
-        el("div", { class: "sub muted small" }, `${fmtShort(t.start)}–${fmtShort(t.end)} · ${isBuf ? "bufor" : ownersLabel(t)}`)
+        el("div", { class: "sub muted small" }, `${t.start === t.end ? fmtShort(t.start) : fmtShort(t.start) + "–" + fmtShort(t.end)}${t.hours ? " · " + t.hours + " h" : ""} · ${isBuf ? "bufor" : ownersLabel(t)}`)
       );
       g.append(el("div", { class: "row" + (isBuf ? " is-buffer" : ""), "data-id": t.id, onclick: () => openTask(t.id) }, label, track));
     });
@@ -371,6 +372,16 @@
     // weekendy i linia „dziś”
     const offset = (new Date(min * DAY).getUTCDay() + 6) % 7; // 0 = poniedziałek
     g.style.setProperty("--weekOffset", (-offset * dayW) + "px");
+    // dni zajęć (domyślnie piątki) i dni bez zajęć
+    const classDays = d.project.classDays || [5];
+    const noClass = d.project.noClassDates || [];
+    for (let dd = min; dd <= max; dd++) {
+      const ds = fromDay(dd);
+      if (!classDays.includes(new Date(dd * DAY).getUTCDay())) continue;
+      const off = noClass.includes(ds);
+      g.append(el("div", { class: off ? "noclass" : "classday", style: `left:${LABEL_W + x(dd)}px;width:${dayW}px`,
+        title: off ? `${fmt(ds)}: brak zajęć` : `${fmt(ds)}: zajęcia` }));
+    }
     if (today >= min && today <= max) {
       g.append(el("div", { class: "today", style: `left:${LABEL_W + x(today) + dayW / 2}px`, title: "Dziś " + fmt(fromDay(today)) }));
     }
@@ -483,6 +494,7 @@
     f.end.value = t ? t.end : fromDay(todayDay() + (type === "buffer" ? 6 : 13));
     f.notes.value = t ? t.notes || "" : "";
     f.progress.value = t ? t.progress : 0;
+    f.hours.value = t && t.hours ? t.hours : "";
     $("#progOut").textContent = f.progress.value + "%";
     f.id.readOnly = !isNew;
     f.type.disabled = !isNew;
@@ -554,6 +566,7 @@
     if (isNew && S.data.tasks.some(t => t.id === id)) return showMsg(`Numer ${id} już istnieje.`, "err");
     const owners = [...document.querySelectorAll('#ownerChecks input:checked')].map(i => i.value);
     const progress = +f.progress.value;
+    const hours = f.hours.value === "" ? null : Math.max(0, +f.hours.value);
     const notes = f.notes.value.trim();
     const rebase = f.rebaseline.checked;
     const slipBuf = f.slipBuffer.value;
@@ -572,6 +585,7 @@
       if (old.name !== name) ch.push("nazwa");
       if (old.start !== start || old.end !== end) ch.push(`termin ${fmtShort(old.start)}–${fmtShort(old.end)} → ${fmtShort(start)}–${fmtShort(end)}` + (rebase ? " (nowy plan)" : ""));
       if (old.progress !== progress) ch.push(`postęp ${old.progress}% → ${progress}%`);
+      if ((old.hours ?? null) !== hours) ch.push(`godziny → ${hours ?? "brak"}`);
       if ((old.notes || "") !== notes) ch.push("notatki");
       if ((old.owners || []).join() !== owners.join()) ch.push("osoby");
       if (old.type === "buffer" && usedDaysInput !== null && usedDaysInput !== (old.usedDays || 0)) ch.push(`zużycie bufora → ${usedDaysInput} dni`);
@@ -585,6 +599,7 @@
         if (isNew) {
           if (data.tasks.some(t => t.id === id)) throw new Error(`Numer ${id} został w międzyczasie zajęty. Wybierz inny.`);
           const nt = { id, name, type, start, end, baselineStart: start, baselineEnd: end, owners: type === "buffer" ? [] : owners, progress: type === "buffer" ? 0 : progress, notes };
+          if (hours !== null && type !== "buffer") nt.hours = hours;
           if (type === "buffer") { nt.usedDays = 0; nt.usage = []; }
           if (unplanned && type !== "buffer") {
             nt.unplanned = true;
@@ -602,6 +617,7 @@
             if (usedDaysInput !== null) t.usedDays = Math.max(0, usedDaysInput);
           } else {
             t.owners = owners; t.progress = progress;
+            if (hours === null) delete t.hours; else t.hours = hours;
             if (slipBuf && !rebase && delta > 0) chargeBuffer(data, slipBuf, t.id, delta, "obsuwa", today);
           }
         }
