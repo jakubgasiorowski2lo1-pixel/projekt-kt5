@@ -342,6 +342,20 @@
       "end": "2026-11-27"
     },
     {
+      "id": "8.2",
+      "name": "Implementacja wizualizacji",
+      "type": "task",
+      "start": "2026-11-20",
+      "end": "2027-01-08",
+      "baselineStart": "2026-11-20",
+      "baselineEnd": "2027-01-08",
+      "owners": [],
+      "progress": 0,
+      "notes": "Implementacja zaprojektowanej wizualizacja w programie.\nProgres częściowo zależny od progresu Programu PLC.",
+      "unplanned": true,
+      "buffer": "none"
+    },
+    {
       "type": "task",
       "owners": [
         "s1",
@@ -376,6 +390,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:02:03.939Z",
+      "user": "MichalS-AI",
+      "text": "Dodano zadanie 8.2 „Implementacja wizualizacji” (20.11.2026–8.01.2027) [niezaplanowane], bez bufora"
+    },
     {
       "ts": "2026-11-13T14:01:18.841Z",
       "user": "Anoisek",
