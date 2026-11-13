@@ -490,18 +490,21 @@
       "owners": [],
       "progress": 0,
       "notes": "Rezerwa czasu na obsuwy i zadania niezaplanowane. Zużycie liczy się automatycznie w piątkach (zajęciach).",
-      "baselineStart": "2027-01-11",
-      "baselineEnd": "2027-01-22",
+      "baselineStart": "2027-01-22",
+      "baselineEnd": "2027-01-29",
       "id": "B1",
       "name": "Bufor na obsuwy i zadania niezaplanowane",
-      "start": "2027-01-18",
+      "start": "2027-01-22",
       "end": "2027-01-29",
-      "extraDays": 0,
-      "usedDays": 0,
-      "usage": []
+      "extraDays": 0
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:24:42.236Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "B1 „Bufor na obsuwy i zadania niezaplanowane”: termin 18.01–29.01 → 22.01–29.01 (nowy plan)"
+    },
     {
       "ts": "2026-11-13T14:18:25.560Z",
       "user": "jakubgasiorowski2lo1-pixel",
