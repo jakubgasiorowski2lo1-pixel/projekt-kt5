@@ -1,0 +1,689 @@
+/* Harmonogram KT5: wykres Gantta bez backendu.
+   Odczyt: GitHub Contents API (fallback: ./data.json).
+   Zapis: PUT do Contents API, każda zmiana = commit. Przy konflikcie (409/422)
+   pobieramy świeże dane i nakładamy zmianę ponownie. */
+(function () {
+  "use strict";
+
+  const CFG = Object.assign({ branch: "main", path: "data.json", riskThreshold: 30 }, window.KT5_CONFIG || {});
+  const TOKEN_KEY = "kt5_token";
+  const DAY = 86400000;
+  const LABEL_W = 300;
+
+  const S = {
+    data: null, sha: null, source: "",
+    token: localStorage.getItem(TOKEN_KEY) || "",
+    user: null, canPush: false,
+    editing: null, // id zadania w dialogu (null = nowe)
+    busy: false
+  };
+
+  // ---------- repo ----------
+  function detectRepo() {
+    let owner = CFG.owner, repo = CFG.repo;
+    const host = location.hostname;
+    if ((!owner || !repo) && host.endsWith(".github.io")) {
+      owner = owner || host.replace(/\.github\.io$/, "");
+      const seg = location.pathname.split("/").filter(Boolean)[0];
+      repo = repo || seg || (owner + ".github.io");
+    }
+    return { owner: owner || CFG.fallbackOwner, repo: repo || CFG.fallbackRepo };
+  }
+  const REPO = detectRepo();
+  const API = "https://api.github.com";
+  const contentsUrl = () => `${API}/repos/${REPO.owner}/${REPO.repo}/contents/${CFG.path}`;
+
+  function headers(json) {
+    const h = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+    if (S.token) h.Authorization = "token " + S.token;
+    if (json) h["Content-Type"] = "application/json";
+    return h;
+  }
+
+  // UTF-8 <-> base64
+  function b64decode(b64) {
+    const bin = atob(b64.replace(/\s/g, ""));
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+  function b64encode(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(bin);
+  }
+
+  async function fetchRemote() {
+    const r = await fetch(`${contentsUrl()}?ref=${encodeURIComponent(CFG.branch)}&t=${Date.now()}`, { headers: headers(), cache: "no-store" });
+    if (!r.ok) {
+      const e = new Error(`GitHub API: ${r.status}`);
+      e.status = r.status;
+      throw e;
+    }
+    const j = await r.json();
+    return { data: normalize(JSON.parse(b64decode(j.content))), sha: j.sha };
+  }
+
+  async function loadData() {
+    try {
+      const { data, sha } = await fetchRemote();
+      S.data = data; S.sha = sha; S.source = "api";
+    } catch (e) {
+      console.warn("Odczyt przez API nie powiódł się, używam ./data.json", e);
+      const r = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) throw new Error("Nie udało się wczytać data.json");
+      S.data = normalize(await r.json()); S.sha = null; S.source = "file";
+    }
+    console.info(`[KT5] dane wczytane z: ${S.source === "api" ? "GitHub API" : "pliku data.json"} (${REPO.owner}/${REPO.repo})`);
+    document.body.dataset.source = S.source;
+  }
+
+  function normalize(d) {
+    d.project = d.project || {};
+    d.team = d.team || [];
+    d.tasks = (d.tasks || []).map(t => Object.assign({
+      type: "task", owners: [], progress: 0, notes: "",
+      baselineStart: t.start, baselineEnd: t.end
+    }, t));
+    d.tasks.forEach(t => {
+      if (t.type === "buffer") { t.usedDays = t.usedDays || 0; t.usage = t.usage || []; }
+    });
+    d.history = d.history || [];
+    return d;
+  }
+
+  /** Zapis: pobierz świeże dane, nałóż zmianę (mutate), wyślij PUT. Ponów przy konflikcie. */
+  async function saveChange(text, mutate) {
+    if (!S.token) { openLogin(); throw new Error("Zaloguj się, aby zapisywać."); }
+    if (S.busy) throw new Error("Poprzedni zapis jeszcze trwa.");
+    S.busy = true; showMsg("Zapisywanie…", "info");
+    try {
+      for (let attempt = 1; attempt <= 4; attempt++) {
+        const fresh = await fetchRemote();
+        mutate(fresh.data);
+        fresh.data.history.unshift({ ts: new Date().toISOString(), user: S.user ? S.user.login : "?", text });
+        fresh.data.history = fresh.data.history.slice(0, 300);
+        sortTasks(fresh.data);
+        const body = {
+          message: `[harmonogram] ${text}`.slice(0, 200),
+          content: b64encode(JSON.stringify(fresh.data, null, 2) + "\n"),
+          sha: fresh.sha,
+          branch: CFG.branch
+        };
+        const r = await fetch(contentsUrl(), { method: "PUT", headers: headers(true), body: JSON.stringify(body) });
+        if (r.ok) {
+          const j = await r.json();
+          S.data = fresh.data; S.sha = j.content.sha; S.source = "api";
+          render();
+          showMsg("Zapisano: " + text, "ok", 4000);
+          return;
+        }
+        if (r.status === 409 || r.status === 422) {
+          console.warn(`Konflikt zapisu (${r.status}), próba ${attempt}`);
+          await new Promise(res => setTimeout(res, 400 * attempt));
+          continue;
+        }
+        if (r.status === 401) throw new Error("Token nieprawidłowy lub wygasł. Zaloguj się ponownie.");
+        if (r.status === 403 || r.status === 404) throw new Error("Brak uprawnień do zapisu. Sprawdź, czy przyjąłeś zaproszenie jako Collaborator i czy token ma zakres public_repo.");
+        throw new Error("Błąd zapisu: " + r.status);
+      }
+      throw new Error("Nie udało się zapisać po kilku próbach (konflikty). Odśwież i spróbuj ponownie.");
+    } catch (e) {
+      showMsg(e.message, "err");
+      throw e;
+    } finally {
+      S.busy = false;
+    }
+  }
+
+  // ---------- daty ----------
+  const toDay = s => Math.round(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / DAY);
+  const fromDay = n => new Date(n * DAY).toISOString().slice(0, 10);
+  const todayDay = () => { const d = new Date(); return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY); };
+  const fmt = s => { const [y, m, d] = s.split("-"); return `${+d}.${m}.${y}`; };
+  const fmtShort = s => { const [, m, d] = s.split("-"); return `${+d}.${m}`; };
+  const MONTHS = ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"];
+  const dayCount = (a, b) => toDay(b) - toDay(a) + 1;
+  const plural = (n, one, few, many) => {
+    const a = Math.abs(n);
+    if (a === 1) return one;
+    if (a % 10 >= 2 && a % 10 <= 4 && (a % 100 < 10 || a % 100 >= 20)) return few;
+    return many;
+  };
+  const days = n => `${n} ${plural(n, "dzień", "dni", "dni")}`;
+
+  // ---------- logika zadań ----------
+  function cmpId(a, b) {
+    const isB = x => /^[A-Za-z]/.test(x);
+    if (isB(a) !== isB(b)) return isB(a) ? 1 : -1;
+    const pa = a.split("."), pb = b.split(".");
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+      if (pa[i] === undefined) return -1;
+      if (pb[i] === undefined) return 1;
+      const c = pa[i].localeCompare(pb[i], "pl", { numeric: true });
+      if (c) return c;
+    }
+    return 0;
+  }
+  function sortTasks(d) { d.tasks.sort((x, y) => cmpId(x.id, y.id)); }
+
+  function taskInfo(t) {
+    const today = todayDay();
+    const s = toDay(t.start), e = toDay(t.end), be = toDay(t.baselineEnd || t.end);
+    const info = { slipDays: Math.max(0, e - be), lateDays: 0, expected: 0, status: "ok" };
+    if (t.type === "buffer") {
+      const len = e - s + 1;
+      info.len = len;
+      info.status = t.usedDays > len ? "late" : "buffer";
+      return info;
+    }
+    info.expected = today < s ? 0 : today >= e ? 100 : Math.round((today - s + 1) / (e - s + 1) * 100);
+    if (t.progress >= 100) info.status = "done";
+    else if (today > e) { info.status = "late"; info.lateDays = today - e; }
+    else if (info.expected - t.progress >= CFG.riskThreshold) info.status = "risk";
+    return info;
+  }
+  const STATUS_LABEL = { ok: "w toku", done: "ukończone", late: "po terminie", risk: "zagrożone", buffer: "bufor" };
+
+  function person(id) { return S.data.team.find(p => p.id === id); }
+  function ownersLabel(t) {
+    const ids = t.owners || [];
+    const students = S.data.team.filter(p => p.id !== "p").map(p => p.id);
+    if (students.length && students.every(id => ids.includes(id))) return "cały zespół";
+    return ids.map(id => (person(id) || { name: id }).name).join(", ");
+  }
+  function taskColor(t) {
+    if (t.type === "buffer") return "#94a3b8";
+    if ((t.owners || []).length === 1) { const p = person(t.owners[0]); if (p && p.color) return p.color; }
+    return "#3b82f6";
+  }
+
+  // ---------- render ----------
+  const $ = sel => document.querySelector(sel);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") n.className = v;
+      else if (k === "style") n.style.cssText = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+      else if (v !== undefined && v !== null && v !== false) n.setAttribute(k, v);
+    }
+    kids.flat().forEach(k => n.append(k instanceof Node ? k : document.createTextNode(String(k))));
+    return n;
+  };
+
+  function render() {
+    const d = S.data;
+    document.title = `${d.project.name || "Projekt"} – harmonogram`;
+    $("#projName").textContent = d.project.name || "Projekt";
+    $("#projDesc").textContent = d.project.description || "";
+    const left = toDay(d.project.deadline) - todayDay();
+    $("#countdown").innerHTML = d.project.deadline
+      ? `Termin końcowy: <b>${fmt(d.project.deadline)}</b><br><span class="${left < 14 ? "err" : ""}">${left >= 0 ? "zostało " + days(left) : "termin minął " + days(-left) + " temu"}</span>`
+      : "";
+    $("#dataLink").href = `https://github.com/${REPO.owner}/${REPO.repo}/blob/${CFG.branch}/${CFG.path}`;
+    renderAuth(); renderFilters(); renderStats(); renderGantt(); renderTeam(); renderHistory();
+    document.body.classList.toggle("can-edit", !!S.token);
+  }
+
+  function renderAuth() {
+    const box = $("#authBox"); box.innerHTML = "";
+    if (S.token) {
+      box.append(
+        el("span", { class: "small" }, S.user ? `Zalogowano: ${S.user.login}` : "Zalogowano"),
+        S.user && !S.canPush ? el("span", { class: "err small", title: "Konto nie ma prawa zapisu do repozytorium" }, " (brak prawa zapisu)") : "",
+        el("button", { type: "button", onclick: logout }, "Wyloguj")
+      );
+    } else {
+      box.append(el("button", { type: "button", class: "primary", onclick: openLogin }, "Zaloguj do edycji"));
+    }
+  }
+
+  function renderFilters() {
+    const sel = $("#filterPerson"), cur = sel.value;
+    sel.innerHTML = '<option value="">wszyscy</option>';
+    S.data.team.forEach(p => sel.append(el("option", { value: p.id }, p.name)));
+    sel.value = cur;
+  }
+
+  function renderStats() {
+    const tasks = S.data.tasks.filter(t => t.type !== "buffer");
+    const infos = tasks.map(taskInfo);
+    const totalDays = tasks.reduce((a, t) => a + dayCount(t.start, t.end), 0) || 1;
+    const done = tasks.reduce((a, t) => a + dayCount(t.start, t.end) * t.progress / 100, 0);
+    const cnt = st => infos.filter(i => i.status === st).length;
+    const slip = infos.filter(i => i.slipDays > 0).length;
+    const buffers = S.data.tasks.filter(t => t.type === "buffer");
+    const bufLen = buffers.reduce((a, b) => a + dayCount(b.start, b.end), 0);
+    const bufUsed = buffers.reduce((a, b) => a + (b.usedDays || 0), 0);
+    const box = $("#stats"); box.innerHTML = "";
+    const stat = (label, value, cls = "") => el("div", { class: "stat " + cls }, el("div", { class: "v" }, value), el("div", { class: "l" }, label));
+    box.append(
+      stat("postęp całości (ważony czasem)", Math.round(done / totalDays * 100) + "%"),
+      stat("ukończone", `${cnt("done")} / ${tasks.length}`),
+      stat("po terminie", cnt("late"), cnt("late") ? "bad" : ""),
+      stat("zagrożone", cnt("risk"), cnt("risk") ? "warn" : ""),
+      stat("z obsuwą terminu", slip, slip ? "warn" : ""),
+      stat("bufor zużyty", `${bufUsed} / ${bufLen} dni`, bufUsed > bufLen ? "bad" : bufUsed > bufLen * 0.7 ? "warn" : "")
+    );
+  }
+
+  function visibleTasks() {
+    const fp = $("#filterPerson").value, fs = $("#filterStatus").value;
+    return S.data.tasks.filter(t => {
+      if (fp && !(t.owners || []).includes(fp)) return false;
+      if (!fs) return true;
+      const i = taskInfo(t);
+      if (fs === "buffer") return t.type === "buffer";
+      if (fs === "slip") return i.slipDays > 0;
+      return t.type !== "buffer" && i.status === fs;
+    });
+  }
+
+  function renderGantt() {
+    const d = S.data, dayW = +$("#zoom").value, today = todayDay();
+    const all = d.tasks;
+    const starts = all.map(t => Math.min(toDay(t.start), toDay(t.baselineStart || t.start)));
+    const ends = all.map(t => Math.max(toDay(t.end), toDay(t.baselineEnd || t.end)));
+    let min = Math.min(toDay(d.project.start || fromDay(today)), ...starts);
+    let max = Math.max(toDay(d.project.deadline || fromDay(today)), ...ends, today);
+    min -= ((new Date(min * DAY).getUTCDay() + 6) % 7) + 0; // od poniedziałku
+    max += 7;
+    const n = max - min + 1, W = n * dayW;
+    const x = day => (day - min) * dayW;
+
+    const g = $("#gantt"); g.innerHTML = "";
+    g.style.setProperty("--dayW", dayW + "px");
+    g.style.setProperty("--labelW", LABEL_W + "px");
+    g.style.width = (LABEL_W + W) + "px";
+
+    // nagłówek: miesiące + tygodnie
+    const months = el("div", { class: "tl months" }), weeks = el("div", { class: "tl weeks" });
+    for (let dd = min; dd <= max; dd++) {
+      const dt = new Date(dd * DAY);
+      if (dt.getUTCDate() === 1 || dd === min) {
+        const endM = Math.min(max, Math.round(Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth() + 1, 1) / DAY) - 1);
+        months.append(el("div", { class: "m", style: `left:${x(dd)}px;width:${(endM - dd + 1) * dayW}px` }, `${MONTHS[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`));
+      }
+      if (dt.getUTCDay() === 1) {
+        weeks.append(el("div", { class: "w", style: `left:${x(dd)}px;width:${7 * dayW}px` }, dayW >= 10 ? fmtShort(fromDay(dd)) : String(dt.getUTCDate())));
+      }
+    }
+    g.append(el("div", { class: "row head" }, el("div", { class: "label" }, "Zadanie"), el("div", { class: "track" }, months, weeks)));
+
+    const rows = visibleTasks();
+    if (!rows.length) g.append(el("div", { class: "row empty" }, el("div", { class: "label muted" }, "Brak zadań dla wybranego filtra."), el("div", { class: "track" })));
+
+    rows.forEach(t => {
+      const i = taskInfo(t);
+      const depth = t.id.split(".").length - 1;
+      const isBuf = t.type === "buffer";
+      const s = toDay(t.start), e = toDay(t.end);
+      const bs = toDay(t.baselineStart || t.start), be = toDay(t.baselineEnd || t.end);
+      const color = taskColor(t);
+      const track = el("div", { class: "track" });
+
+      // pierwotny plan (jeśli różny od aktualnego)
+      if (bs !== s || be !== e) {
+        track.append(el("div", { class: "ghost", style: `left:${x(bs)}px;width:${(be - bs + 1) * dayW}px`, title: `Pierwotny plan: ${fmt(t.baselineStart)} – ${fmt(t.baselineEnd)}` }));
+      }
+
+      if (isBuf) {
+        const len = e - s + 1, used = Math.min(t.usedDays || 0, len);
+        const bar = el("div", { class: "bar buffer" + (t.usedDays > len ? " over" : ""), style: `left:${x(s)}px;width:${len * dayW}px`,
+          title: `Bufor ${fmt(t.start)} – ${fmt(t.end)} (${days(len)})\nZużyto: ${days(t.usedDays || 0)}` });
+        bar.append(el("div", { class: "buf-used", style: `width:${used / len * 100}%` }));
+        bar.append(el("span", { class: "bar-txt" }, `${t.usedDays || 0}/${len} dni`));
+        track.append(bar);
+      } else {
+        // część planowa: od startu do min(koniec, koniec planu)
+        const planEnd = Math.min(e, be);
+        const tip = [
+          `${t.id} ${t.name}`,
+          `Termin: ${fmt(t.start)} – ${fmt(t.end)}`,
+          i.slipDays ? `Obsuwa: +${days(i.slipDays)} (plan: do ${fmt(t.baselineEnd)})` : "",
+          `Postęp: ${t.progress}% (oczekiwany ~${i.expected}%)`,
+          i.lateDays ? `Po terminie od ${days(i.lateDays)}` : "",
+          `Osoby: ${ownersLabel(t)}`
+        ].filter(Boolean).join("\n");
+        const bar = el("div", { class: `bar st-${i.status}` + (t.unplanned ? " unplanned" : ""), style: `left:${x(s)}px;width:${(e - s + 1) * dayW}px;--c:${color}`, title: tip });
+        const planW = planEnd >= s ? (planEnd - s + 1) / (e - s + 1) * 100 : 0;
+        bar.append(el("div", { class: "seg plan", style: `width:${planW}%` }));
+        if (i.slipDays) bar.append(el("div", { class: "seg slip", style: `left:${planW}%;width:${100 - planW}%` }));
+        bar.append(el("div", { class: "prog", style: `width:${t.progress}%` }));
+        bar.append(el("span", { class: "bar-txt" }, `${t.progress}%`));
+        track.append(bar);
+        if (i.lateDays) {
+          track.append(el("div", { class: "late-ext", style: `left:${x(e + 1)}px;width:${i.lateDays * dayW}px`, title: `Po terminie: ${days(i.lateDays)}, postęp ${t.progress}%` }));
+        }
+      }
+
+      const badge = el("span", { class: "badge b-" + i.status }, STATUS_LABEL[i.status] + (i.slipDays && !isBuf ? ` · +${i.slipDays}d` : ""));
+      const label = el("div", { class: "label", style: `padding-left:${8 + depth * 16}px` },
+        el("span", { class: "tid" }, t.id),
+        el("span", { class: "tname" + (depth ? "" : " top-level") }, t.name, t.unplanned ? el("span", { class: "tag" }, "niezapl.") : ""),
+        badge,
+        el("div", { class: "sub muted small" }, `${fmtShort(t.start)}–${fmtShort(t.end)} · ${isBuf ? "bufor" : ownersLabel(t)}`)
+      );
+      g.append(el("div", { class: "row" + (isBuf ? " is-buffer" : ""), "data-id": t.id, onclick: () => openTask(t.id) }, label, track));
+    });
+
+    // weekendy i linia „dziś”
+    const offset = (new Date(min * DAY).getUTCDay() + 6) % 7; // 0 = poniedziałek
+    g.style.setProperty("--weekOffset", (-offset * dayW) + "px");
+    if (today >= min && today <= max) {
+      g.append(el("div", { class: "today", style: `left:${LABEL_W + x(today) + dayW / 2}px`, title: "Dziś " + fmt(fromDay(today)) }));
+    }
+    if (d.project.deadline) {
+      g.append(el("div", { class: "deadline", style: `left:${LABEL_W + x(toDay(d.project.deadline)) + dayW}px`, title: "Termin końcowy " + fmt(d.project.deadline) }));
+    }
+    S._x = x; S._min = min;
+  }
+
+  function scrollToToday() {
+    const wrap = $("#ganttWrap");
+    if (!S._x) return;
+    wrap.scrollLeft = Math.max(0, S._x(todayDay()) - (wrap.clientWidth - LABEL_W) / 3);
+  }
+
+  function renderTeam() {
+    const ul = $("#teamList"); ul.innerHTML = "";
+    S.data.team.forEach(p => {
+      const mine = S.data.tasks.filter(t => (t.owners || []).includes(p.id) && t.type !== "buffer");
+      const late = mine.filter(t => taskInfo(t).status === "late").length;
+      ul.append(el("li", {},
+        el("i", { class: "dot", style: `background:${p.color || "#999"}` }),
+        el("b", {}, p.name), " ", el("span", { class: "muted" }, p.role || ""),
+        el("span", { class: "small muted" }, ` · zadań: ${mine.length}`),
+        late ? el("span", { class: "small err" }, ` · po terminie: ${late}`) : ""
+      ));
+    });
+  }
+
+  function renderHistory() {
+    const ul = $("#history"); ul.innerHTML = "";
+    S.data.history.slice(0, 40).forEach(h => {
+      const dt = new Date(h.ts);
+      ul.append(el("li", {}, el("span", { class: "muted small" }, `${dt.toLocaleDateString("pl-PL")} ${dt.toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })} · ${h.user}`), el("div", {}, h.text)));
+    });
+    if (!S.data.history.length) ul.append(el("li", { class: "muted" }, "Brak zmian."));
+  }
+
+  // ---------- komunikaty ----------
+  let msgTimer;
+  function showMsg(text, kind = "info", ms = 0) {
+    const m = $("#msg");
+    m.textContent = text; m.className = "msg " + kind; m.hidden = false;
+    clearTimeout(msgTimer);
+    if (ms) msgTimer = setTimeout(() => (m.hidden = true), ms);
+  }
+
+  // ---------- logowanie ----------
+  function openLogin() { $("#loginErr").textContent = ""; $("#loginForm").reset(); $("#loginDlg").showModal(); }
+  async function checkUser() {
+    if (!S.token) return;
+    const r = await fetch(API + "/user", { headers: headers() });
+    if (r.status === 401) { throw new Error("Token nieprawidłowy lub wygasł."); }
+    if (!r.ok) throw new Error("Nie udało się sprawdzić tokenu: " + r.status);
+    S.user = await r.json();
+    const scopes = r.headers.get("x-oauth-scopes");
+    const rr = await fetch(`${API}/repos/${REPO.owner}/${REPO.repo}`, { headers: headers() });
+    S.canPush = rr.ok ? !!((await rr.json()).permissions || {}).push : false;
+    if (scopes !== null && !/\b(public_)?repo\b/.test(scopes)) {
+      showMsg("Token nie ma zakresu public_repo, zapis się nie uda.", "err");
+    } else if (!S.canPush) {
+      showMsg(`Konto ${S.user.login} nie ma prawa zapisu do ${REPO.owner}/${REPO.repo}. Poproś właściciela o dodanie jako Collaborator i przyjmij zaproszenie.`, "err");
+    }
+  }
+  function logout() {
+    localStorage.removeItem(TOKEN_KEY);
+    S.token = ""; S.user = null; S.canPush = false;
+    render(); showMsg("Wylogowano. Token usunięty z tej przeglądarki.", "info", 3000);
+  }
+
+  // ---------- dialog zadania ----------
+  const F = () => $("#taskForm").elements;
+
+  function nextId(type) {
+    if (type === "buffer") {
+      let n = 1; while (S.data.tasks.some(t => t.id === "B" + n)) n++;
+      return "B" + n;
+    }
+    const tops = S.data.tasks.map(t => parseInt(t.id, 10)).filter(n => !isNaN(n));
+    return String((tops.length ? Math.max(...tops) : 0) + 1);
+  }
+
+  function fillBufferSelect(sel, emptyText) {
+    sel.innerHTML = "";
+    sel.append(el("option", { value: "" }, emptyText));
+    S.data.tasks.filter(t => t.type === "buffer").forEach(b => {
+      const left = dayCount(b.start, b.end) - (b.usedDays || 0);
+      sel.append(el("option", { value: b.id }, `${b.id} ${b.name} (zostało ${days(left)})`));
+    });
+  }
+
+  function openTask(id, newType) {
+    const t = id ? S.data.tasks.find(x => x.id === id) : null;
+    const isNew = !t;
+    const type = t ? t.type : (newType || "task");
+    S.editing = id || null;
+    const form = $("#taskForm"); form.reset();
+    const f = F();
+    form.classList.toggle("is-new", isNew);
+    form.classList.toggle("is-buffer", type === "buffer");
+    const readOnly = !S.token;
+    form.classList.toggle("read-only", readOnly);
+
+    $("#taskDlgTitle").textContent = isNew ? (type === "buffer" ? "Nowy bufor" : "Nowe zadanie") : `${t.id} ${t.name}`;
+    const today = fromDay(todayDay());
+    f.id.value = t ? t.id : nextId(type);
+    f.type.value = type;
+    f.name.value = t ? t.name : "";
+    f.start.value = t ? t.start : today;
+    f.end.value = t ? t.end : fromDay(todayDay() + (type === "buffer" ? 6 : 13));
+    f.notes.value = t ? t.notes || "" : "";
+    f.progress.value = t ? t.progress : 0;
+    $("#progOut").textContent = f.progress.value + "%";
+    f.id.readOnly = !isNew;
+    f.type.disabled = !isNew;
+
+    // osoby
+    const oc = $("#ownerChecks"); oc.innerHTML = "";
+    S.data.team.forEach(p => {
+      const checked = t ? (t.owners || []).includes(p.id) : false;
+      oc.append(el("label", { class: "check" }, el("input", { type: "checkbox", name: "owner", value: p.id, checked: checked ? "checked" : null }), " ", p.name));
+    });
+
+    // informacja o planie bazowym
+    if (t && t.type !== "buffer") {
+      const i = taskInfo(t);
+      $("#baselineInfo").textContent = `Plan bazowy: ${fmt(t.baselineStart)} – ${fmt(t.baselineEnd)}` +
+        (i.slipDays ? ` · obsuwa +${days(i.slipDays)}` : "") + ` · status: ${STATUS_LABEL[i.status]}` +
+        (i.expected ? ` · oczekiwany postęp ~${i.expected}%` : "");
+    } else $("#baselineInfo").textContent = "";
+
+    // bufory
+    fillBufferSelect(f.slipBuffer, "nie, zwykła obsuwa");
+    fillBufferSelect(f.newBuffer, "nie odejmuj");
+    $("#slipBox").hidden = true;
+    $("#unplannedBox").hidden = true;
+    const bu = $("#bufferUsage"); bu.innerHTML = "";
+    if (t && t.type === "buffer") {
+      const len = dayCount(t.start, t.end);
+      bu.append(el("p", {}, `Zużyto ${days(t.usedDays || 0)} z ${days(len)}.`));
+      if ((t.usage || []).length) {
+        const ul = el("ul", { class: "small" });
+        t.usage.forEach(u => ul.append(el("li", {}, `${fmt(u.date)}: ${u.taskId} – ${days(u.days)}${u.reason ? " (" + u.reason + ")" : ""}`)));
+        bu.append(ul);
+      }
+      if (S.token) bu.append(el("label", {}, "Ręcznie zmień zużycie (dni): ", el("input", { type: "number", name: "usedDays", min: 0, value: t.usedDays || 0, style: "width:6em" })));
+    }
+
+    [...form.querySelectorAll("input,select,textarea")].forEach(i => { if (i.name !== "type") i.disabled = readOnly; });
+    if (!isNew) f.type.disabled = true;
+    $("#btnSave").hidden = readOnly;
+    $("#btnDelete").hidden = readOnly || isNew;
+    updateSlipBox();
+    $("#taskDlg").showModal();
+  }
+
+  function updateSlipBox() {
+    const f = F();
+    const t = S.editing ? S.data.tasks.find(x => x.id === S.editing) : null;
+    if (t && t.type !== "buffer" && f.end.value && !f.rebaseline.checked) {
+      const delta = toDay(f.end.value) - toDay(t.end);
+      if (delta > 0) {
+        $("#slipText").textContent = `Przesuwasz koniec o ${days(delta)} później. Zostanie to pokazane jako obsuwa względem planu.`;
+        $("#slipBox").hidden = false;
+        return;
+      }
+    }
+    $("#slipBox").hidden = true;
+  }
+
+  async function onSubmit(ev) {
+    ev.preventDefault();
+    const f = F();
+    const isNew = !S.editing;
+    const id = f.id.value.trim();
+    const type = f.type.value;
+    const name = f.name.value.trim();
+    const start = f.start.value, end = f.end.value;
+    if (!name) return showMsg("Podaj nazwę.", "err");
+    if (toDay(end) < toDay(start)) return showMsg("Koniec nie może być przed początkiem.", "err");
+    if (isNew && S.data.tasks.some(t => t.id === id)) return showMsg(`Numer ${id} już istnieje.`, "err");
+    const owners = [...document.querySelectorAll('#ownerChecks input:checked')].map(i => i.value);
+    const progress = +f.progress.value;
+    const notes = f.notes.value.trim();
+    const rebase = f.rebaseline.checked;
+    const slipBuf = f.slipBuffer.value;
+    const unplanned = f.unplanned.checked;
+    const newBuf = f.newBuffer.value;
+    const usedDaysInput = f.usedDays ? +f.usedDays.value : null;
+    const today = fromDay(todayDay());
+
+    let text;
+    if (isNew) {
+      text = `${type === "buffer" ? "Dodano bufor" : "Dodano zadanie"} ${id} „${name}” (${fmt(start)}–${fmt(end)})` + (unplanned ? " [niezaplanowane]" : "");
+      if (newBuf && unplanned) text += `, pokryte z bufora ${newBuf}`;
+    } else {
+      const old = S.data.tasks.find(t => t.id === S.editing);
+      const ch = [];
+      if (old.name !== name) ch.push("nazwa");
+      if (old.start !== start || old.end !== end) ch.push(`termin ${fmtShort(old.start)}–${fmtShort(old.end)} → ${fmtShort(start)}–${fmtShort(end)}` + (rebase ? " (nowy plan)" : ""));
+      if (old.progress !== progress) ch.push(`postęp ${old.progress}% → ${progress}%`);
+      if ((old.notes || "") !== notes) ch.push("notatki");
+      if ((old.owners || []).join() !== owners.join()) ch.push("osoby");
+      if (old.type === "buffer" && usedDaysInput !== null && usedDaysInput !== (old.usedDays || 0)) ch.push(`zużycie bufora → ${usedDaysInput} dni`);
+      if (slipBuf && !rebase && toDay(end) > toDay(old.end)) ch.push(`obsuwa pokryta z bufora ${slipBuf}`);
+      if (!ch.length) { $("#taskDlg").close(); return; }
+      text = `${id} „${name}”: ${ch.join(", ")}`;
+    }
+
+    try {
+      await saveChange(text, data => {
+        if (isNew) {
+          if (data.tasks.some(t => t.id === id)) throw new Error(`Numer ${id} został w międzyczasie zajęty. Wybierz inny.`);
+          const nt = { id, name, type, start, end, baselineStart: start, baselineEnd: end, owners: type === "buffer" ? [] : owners, progress: type === "buffer" ? 0 : progress, notes };
+          if (type === "buffer") { nt.usedDays = 0; nt.usage = []; }
+          if (unplanned && type !== "buffer") {
+            nt.unplanned = true;
+            if (newBuf) chargeBuffer(data, newBuf, id, dayCount(start, end), "zadanie niezaplanowane", today);
+          }
+          data.tasks.push(nt);
+        } else {
+          const t = data.tasks.find(x => x.id === S.editing);
+          if (!t) throw new Error("To zadanie zostało w międzyczasie usunięte.");
+          const delta = toDay(end) - toDay(t.end);
+          t.name = name; t.notes = notes;
+          t.start = start; t.end = end;
+          if (rebase) { t.baselineStart = start; t.baselineEnd = end; }
+          if (t.type === "buffer") {
+            if (usedDaysInput !== null) t.usedDays = Math.max(0, usedDaysInput);
+          } else {
+            t.owners = owners; t.progress = progress;
+            if (slipBuf && !rebase && delta > 0) chargeBuffer(data, slipBuf, t.id, delta, "obsuwa", today);
+          }
+        }
+      });
+      $("#taskDlg").close();
+    } catch (e) { /* komunikat już pokazany */ }
+  }
+
+  function chargeBuffer(data, bufId, taskId, n, reason, date) {
+    const b = data.tasks.find(x => x.id === bufId && x.type === "buffer");
+    if (!b) throw new Error(`Bufor ${bufId} nie istnieje.`);
+    b.usedDays = (b.usedDays || 0) + n;
+    b.usage = b.usage || [];
+    b.usage.push({ date, taskId, days: n, reason });
+  }
+
+  async function onDelete() {
+    const id = S.editing;
+    if (!id) return;
+    const t = S.data.tasks.find(x => x.id === id);
+    if (!confirm(`Usunąć ${t.type === "buffer" ? "bufor" : "zadanie"} ${id} „${t.name}”?`)) return;
+    try {
+      await saveChange(`Usunięto ${id} „${t.name}”`, data => {
+        data.tasks = data.tasks.filter(x => x.id !== id);
+      });
+      $("#taskDlg").close();
+    } catch (e) { /* pokazane */ }
+  }
+
+  // ---------- start ----------
+  function bind() {
+    ["#filterPerson", "#filterStatus"].forEach(s => $(s).addEventListener("change", renderGantt));
+    $("#zoom").addEventListener("change", () => { renderGantt(); scrollToToday(); });
+    $("#btnToday").addEventListener("click", scrollToToday);
+    $("#btnReload").addEventListener("click", async () => {
+      try { await loadData(); render(); showMsg("Pobrano najnowsze dane.", "ok", 2500); } catch (e) { showMsg(e.message, "err"); }
+    });
+    $("#btnAddTask").addEventListener("click", () => openTask(null, "task"));
+    $("#btnAddBuffer").addEventListener("click", () => openTask(null, "buffer"));
+    $("#taskForm").addEventListener("submit", onSubmit);
+    $("#btnCancel").addEventListener("click", () => $("#taskDlg").close());
+    $("#btnDelete").addEventListener("click", onDelete);
+    const f = F();
+    f.progress.addEventListener("input", () => ($("#progOut").textContent = f.progress.value + "%"));
+    f.end.addEventListener("change", updateSlipBox);
+    f.rebaseline.addEventListener("change", updateSlipBox);
+    f.unplanned.addEventListener("change", () => ($("#unplannedBox").hidden = !f.unplanned.checked));
+    f.start.addEventListener("change", () => { if (f.end.value && f.end.value < f.start.value) f.end.value = f.start.value; });
+
+    $("#loginForm").addEventListener("submit", async ev => {
+      ev.preventDefault();
+      const tok = $("#loginForm").elements.token.value.trim();
+      S.token = tok;
+      try {
+        await checkUser();
+        localStorage.setItem(TOKEN_KEY, tok);
+        $("#loginDlg").close();
+        await loadData();
+        render();
+        if (S.canPush) showMsg(`Zalogowano jako ${S.user.login}. Możesz edytować (kliknij zadanie).`, "ok", 5000);
+      } catch (e) {
+        S.token = ""; S.user = null;
+        $("#loginErr").textContent = e.message;
+      }
+    });
+    $("#btnLoginCancel").addEventListener("click", () => $("#loginDlg").close());
+  }
+
+  async function init() {
+    bind();
+    try {
+      if (S.token) {
+        try { await checkUser(); } catch (e) { showMsg(e.message + " Zaloguj się ponownie.", "err"); S.token = ""; localStorage.removeItem(TOKEN_KEY); }
+      }
+      await loadData();
+      render();
+      scrollToToday();
+    } catch (e) {
+      showMsg("Błąd wczytywania danych: " + e.message, "err");
+    }
+  }
+
+  window.KT5 = { state: S, repo: REPO, reload: () => loadData().then(render) };
+  init();
+})();

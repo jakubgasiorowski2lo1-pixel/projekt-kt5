@@ -1,0 +1,368 @@
+{
+  "project": {
+    "name": "Linia produkcyjna KT5",
+    "description": "Program PLC, wizualizacja HMI, schematy elektryczny, pneumatyczny i hydrauliczny, kosztorys.",
+    "start": "2026-10-05",
+    "deadline": "2027-01-29"
+  },
+  "team": [
+    {
+      "id": "s1",
+      "name": "Jakub G.",
+      "role": "PLC",
+      "color": "#2563eb"
+    },
+    {
+      "id": "s2",
+      "name": "Bartek",
+      "role": "PLC",
+      "color": "#0891b2"
+    },
+    {
+      "id": "s3",
+      "name": "Michał",
+      "role": "HMI",
+      "color": "#7c3aed"
+    },
+    {
+      "id": "s4",
+      "name": "Jakub Sz.",
+      "role": "Schematy",
+      "color": "#059669"
+    },
+    {
+      "id": "s5",
+      "name": "Bohdan",
+      "role": "Dobór elementów, kosztorys, opis",
+      "color": "#d97706"
+    },
+    {
+      "id": "p",
+      "name": "Prowadzący",
+      "role": "Opiekun projektu",
+      "color": "#64748b"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "name": "Analiza wymagań i założeń projektu",
+      "type": "task",
+      "start": "2026-10-05",
+      "end": "2026-10-16",
+      "baselineStart": "2026-10-05",
+      "baselineEnd": "2026-10-16",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "2",
+      "name": "Koncepcja linii produkcyjnej",
+      "type": "task",
+      "start": "2026-10-12",
+      "end": "2026-10-30",
+      "baselineStart": "2026-10-12",
+      "baselineEnd": "2026-10-30",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "2.1",
+      "name": "Podział prac i harmonogram",
+      "type": "task",
+      "start": "2026-10-12",
+      "end": "2026-10-16",
+      "baselineStart": "2026-10-12",
+      "baselineEnd": "2026-10-16",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "3",
+      "name": "Dobór elementów (czujniki, napędy, sterownik)",
+      "type": "task",
+      "start": "2026-10-26",
+      "end": "2026-11-27",
+      "baselineStart": "2026-10-26",
+      "baselineEnd": "2026-11-27",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "4",
+      "name": "Kosztorys",
+      "type": "task",
+      "start": "2026-11-23",
+      "end": "2026-12-18",
+      "baselineStart": "2026-11-23",
+      "baselineEnd": "2026-12-18",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "5",
+      "name": "Program PLC",
+      "type": "task",
+      "start": "2026-11-02",
+      "end": "2027-01-08",
+      "baselineStart": "2026-11-02",
+      "baselineEnd": "2027-01-08",
+      "owners": [
+        "s1",
+        "s2"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "5.1",
+      "name": "Konfiguracja sprzętu i mapa I/O",
+      "type": "task",
+      "start": "2026-11-02",
+      "end": "2026-11-20",
+      "baselineStart": "2026-11-02",
+      "baselineEnd": "2026-11-20",
+      "owners": [
+        "s1",
+        "s2"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "5.2",
+      "name": "Projekt ekranów HMI",
+      "type": "task",
+      "start": "2026-11-09",
+      "end": "2026-11-27",
+      "baselineStart": "2026-11-09",
+      "baselineEnd": "2026-11-27",
+      "owners": [
+        "s3"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "5.3",
+      "name": "Implementacja wizualizacji HMI",
+      "type": "task",
+      "start": "2026-11-30",
+      "end": "2027-01-08",
+      "baselineStart": "2026-11-30",
+      "baselineEnd": "2027-01-08",
+      "owners": [
+        "s3"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "5.4",
+      "name": "Logika sterowania i tryby pracy",
+      "type": "task",
+      "start": "2026-11-16",
+      "end": "2027-01-08",
+      "baselineStart": "2026-11-16",
+      "baselineEnd": "2027-01-08",
+      "owners": [
+        "s1",
+        "s2"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "6",
+      "name": "Schemat elektryczny",
+      "type": "task",
+      "start": "2026-11-02",
+      "end": "2026-12-11",
+      "baselineStart": "2026-11-02",
+      "baselineEnd": "2026-12-11",
+      "owners": [
+        "s4"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "6.1",
+      "name": "Schemat pneumatyczny",
+      "type": "task",
+      "start": "2026-11-16",
+      "end": "2026-12-18",
+      "baselineStart": "2026-11-16",
+      "baselineEnd": "2026-12-18",
+      "owners": [
+        "s4"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "6.2",
+      "name": "Schemat hydrauliczny",
+      "type": "task",
+      "start": "2026-11-30",
+      "end": "2027-01-08",
+      "baselineStart": "2026-11-30",
+      "baselineEnd": "2027-01-08",
+      "owners": [
+        "s4"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "7",
+      "name": "Opis działania linii",
+      "type": "task",
+      "start": "2026-12-07",
+      "end": "2027-01-15",
+      "baselineStart": "2026-12-07",
+      "baselineEnd": "2027-01-15",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "8",
+      "name": "Symulacja i testy programu z HMI",
+      "type": "task",
+      "start": "2027-01-04",
+      "end": "2027-01-15",
+      "baselineStart": "2027-01-04",
+      "baselineEnd": "2027-01-15",
+      "owners": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "9",
+      "name": "Integracja dokumentacji",
+      "type": "task",
+      "start": "2027-01-11",
+      "end": "2027-01-20",
+      "baselineStart": "2027-01-11",
+      "baselineEnd": "2027-01-20",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "10",
+      "name": "Przegląd z prowadzącym",
+      "type": "task",
+      "start": "2027-01-18",
+      "end": "2027-01-22",
+      "baselineStart": "2027-01-18",
+      "baselineEnd": "2027-01-22",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "11",
+      "name": "Poprawki po przeglądzie",
+      "type": "task",
+      "start": "2027-01-20",
+      "end": "2027-01-26",
+      "baselineStart": "2027-01-20",
+      "baselineEnd": "2027-01-26",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "12",
+      "name": "Prezentacja i oddanie projektu",
+      "type": "task",
+      "start": "2027-01-25",
+      "end": "2027-01-29",
+      "baselineStart": "2027-01-25",
+      "baselineEnd": "2027-01-29",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
+      "id": "B1",
+      "name": "Bufor na obsuwy i zadania niezaplanowane",
+      "type": "buffer",
+      "start": "2027-01-11",
+      "end": "2027-01-22",
+      "baselineStart": "2027-01-11",
+      "baselineEnd": "2027-01-22",
+      "owners": [],
+      "progress": 0,
+      "notes": "Rezerwa czasu. Gdy zadanie się obsuwa albo dochodzi niezaplanowane, jego dni można pokryć z tego bufora.",
+      "usedDays": 0,
+      "usage": []
+    }
+  ],
+  "history": [
+    {
+      "ts": "2026-11-13T13:00:00Z",
+      "user": "system",
+      "text": "Utworzono harmonogram (propozycja dat 5.10.2026 – 29.01.2027)."
+    }
+  ]
+}

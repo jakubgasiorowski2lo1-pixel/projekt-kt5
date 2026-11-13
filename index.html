@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linia produkcyjna KT5 – harmonogram</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="title">
+      <h1 id="projName">Linia produkcyjna KT5</h1>
+      <p id="projDesc" class="muted"></p>
+    </div>
+    <div class="top-right">
+      <div id="countdown" class="countdown"></div>
+      <div id="authBox" class="auth"></div>
+    </div>
+  </header>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="toolbar">
+    <label>Osoba:
+      <select id="filterPerson"><option value="">wszyscy</option></select>
+    </label>
+    <label>Status:
+      <select id="filterStatus">
+        <option value="">wszystkie</option>
+        <option value="late">po terminie</option>
+        <option value="risk">zagrożone</option>
+        <option value="slip">z obsuwą</option>
+        <option value="done">ukończone</option>
+        <option value="buffer">bufory</option>
+      </select>
+    </label>
+    <label>Skala:
+      <select id="zoom">
+        <option value="6">tygodnie (mała)</option>
+        <option value="12" selected>dni (średnia)</option>
+        <option value="22">dni (duża)</option>
+      </select>
+    </label>
+    <button id="btnToday" type="button">Dziś</button>
+    <span class="spacer"></span>
+    <button id="btnAddTask" class="primary editor-only" type="button">+ Dodaj zadanie</button>
+    <button id="btnAddBuffer" class="editor-only" type="button">+ Dodaj bufor</button>
+    <button id="btnReload" type="button" title="Pobierz najnowsze dane">⟳ Odśwież</button>
+  </section>
+
+  <section class="legend">
+    <span><i class="lg lg-plan"></i>plan / postęp</span>
+    <span><i class="lg lg-slip"></i>obsuwa (przesunięty termin względem planu)</span>
+    <span><i class="lg lg-late"></i>po terminie (minęła data końca, &lt; 100%)</span>
+    <span><i class="lg lg-buffer"></i>bufor</span>
+    <span><i class="lg lg-bufused"></i>zużyta część bufora</span>
+    <span><i class="lg lg-ghost"></i>pierwotny plan</span>
+    <span><i class="lg lg-today"></i>dziś</span>
+  </section>
+
+  <div id="msg" class="msg" hidden></div>
+
+  <main class="gantt-wrap" id="ganttWrap">
+    <div id="gantt" class="gantt"></div>
+  </main>
+
+  <section class="panels">
+    <div class="panel">
+      <h2>Zespół</h2>
+      <ul id="teamList" class="team"></ul>
+    </div>
+    <div class="panel">
+      <h2>Historia zmian</h2>
+      <ul id="history" class="history"></ul>
+    </div>
+  </section>
+
+  <footer class="muted small">
+    Dane: <a id="dataLink" href="#">data.json</a> · Każda zmiana zapisuje się jako commit w repozytorium.
+  </footer>
+
+  <!-- Szczegóły / edycja zadania -->
+  <dialog id="taskDlg">
+    <form id="taskForm" method="dialog">
+      <h2 id="taskDlgTitle">Zadanie</h2>
+      <div class="grid2">
+        <label>Numer <input name="id" required pattern="[0-9A-Za-z.]+" placeholder="np. 5.5 albo B2"></label>
+        <label>Typ
+          <select name="type">
+            <option value="task">zadanie</option>
+            <option value="buffer">bufor</option>
+          </select>
+        </label>
+      </div>
+      <label>Nazwa <input name="name" required maxlength="120"></label>
+      <div class="grid2">
+        <label>Początek <input type="date" name="start" required></label>
+        <label>Koniec <input type="date" name="end" required></label>
+      </div>
+      <p class="muted small" id="baselineInfo"></p>
+      <label class="check only-edit"><input type="checkbox" name="rebaseline"> To zmiana planu, nie obsuwa (ustaw nowe daty jako plan bazowy)</label>
+      <div class="slip-box" id="slipBox" hidden>
+        <p id="slipText"></p>
+        <label>Pokryj z bufora:
+          <select name="slipBuffer"></select>
+        </label>
+      </div>
+      <label class="check only-new task-only"><input type="checkbox" name="unplanned"> Zadanie niezaplanowane</label>
+      <div class="only-new task-only" id="unplannedBox" hidden>
+        <label>Odejmij czas od bufora:
+          <select name="newBuffer"></select>
+        </label>
+      </div>
+      <fieldset class="task-only">
+        <legend>Osoby</legend>
+        <div id="ownerChecks" class="owners"></div>
+      </fieldset>
+      <label class="task-only">Postęp: <output id="progOut">0%</output>
+        <input type="range" name="progress" min="0" max="100" step="5">
+      </label>
+      <label>Notatki <textarea name="notes" rows="3" maxlength="2000"></textarea></label>
+      <div id="bufferUsage" class="buffer-usage"></div>
+      <div class="dlg-actions">
+        <button type="button" id="btnDelete" class="danger only-edit">Usuń</button>
+        <span class="spacer"></span>
+        <button type="button" id="btnCancel">Zamknij</button>
+        <button type="submit" id="btnSave" class="primary">Zapisz</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Logowanie -->
+  <dialog id="loginDlg">
+    <form id="loginForm" method="dialog">
+      <h2>Zaloguj się do edycji</h2>
+      <p class="small">Wklej token GitHub (classic) z zakresem <code>public_repo</code>.
+        Utworzysz go w <a href="https://github.com/settings/tokens/new?scopes=public_repo&description=KT5%20harmonogram" target="_blank" rel="noopener">GitHub → Settings → Developer settings → Tokens (classic)</a>.
+        Token zostaje tylko w tej przeglądarce (localStorage).</p>
+      <label>Token <input name="token" type="password" autocomplete="off" required placeholder="ghp_..."></label>
+      <p id="loginErr" class="err small"></p>
+      <div class="dlg-actions">
+        <span class="spacer"></span>
+        <button type="button" id="btnLoginCancel">Anuluj</button>
+        <button type="submit" class="primary">Zaloguj</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
