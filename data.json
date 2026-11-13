@@ -453,6 +453,20 @@
       "unplanned": true
     },
     {
+      "id": "8.3",
+      "name": "Opracowanie instrukcji HMI dla operatora",
+      "type": "task",
+      "start": "2027-01-08",
+      "end": "2027-01-15",
+      "baselineStart": "2027-01-08",
+      "baselineEnd": "2027-01-15",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
       "type": "task",
       "owners": [
         "s5"
@@ -499,6 +513,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:17:06.403Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Dodano zadanie 8.3 „Opracowanie instrukcji HMI dla operatora” (8.01.2027–15.01.2027)"
+    },
     {
       "ts": "2026-11-13T14:15:48.038Z",
       "user": "jakubgasiorowski2lo1-pixel",
