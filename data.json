@@ -50,20 +50,6 @@
         "s2"
       ],
       "progress": 0,
-      "notes": "Wymaga: wybrany sterownik i elementy układu (zad. II).\nSzacowany czas: 3 h.\nZależy od: 5.4, „II. Dobór elementów układu”.",
-      "baselineStart": "2026-12-03",
-      "baselineEnd": "2026-12-08",
-      "id": "5.5",
-      "name": "Konfiguracja projektu w TIA Portal",
-      "start": "2026-12-03",
-      "end": "2026-12-08"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s2"
-      ],
-      "progress": 0,
       "notes": "Wymaga: lista wejść i wyjść PLC (zad. V) oraz działanie siłowników i zaworów (zad. VI).\nSzacowany czas: 15 h.\nZależy od: 5.5, „V. Schemat elektryczny układu”, „VI. Schemat pneumatyczny układu”.",
       "baselineStart": "2026-12-08",
       "baselineEnd": "2027-01-03",
@@ -132,6 +118,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:36.977Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.5 „Konfiguracja projektu w TIA Portal”"
+    },
     {
       "ts": "2026-11-13T13:39:31.892Z",
       "user": "jakubgasiorowski2lo1-pixel",
