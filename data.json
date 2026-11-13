@@ -111,7 +111,7 @@
       "baselineEnd": "2026-11-27",
       "id": "5.2",
       "name": "Projekt ekranów HMI",
-      "start": "2026-11-20",
+      "start": "2026-11-09",
       "end": "2026-11-27"
     },
     {
@@ -298,6 +298,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:34:44.365Z",
+      "user": "MichalS-AI",
+      "text": "5.2 „Projekt ekranów HMI”: termin 20.11–27.11 → 9.11–27.11 (nowy plan)"
+    },
     {
       "ts": "2026-11-13T13:34:32.263Z",
       "user": "MichalS-AI",
