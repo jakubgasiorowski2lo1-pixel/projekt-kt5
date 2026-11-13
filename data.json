@@ -398,11 +398,7 @@
     {
       "type": "task",
       "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s3"
       ],
       "progress": 0,
       "notes": "VIII. Ekrany operatora; projekt HMI w tym samym projekcie TIA Portal.",
@@ -475,6 +471,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:11:40.660Z",
+      "user": "MichalS-AI",
+      "text": "8 „Program HMI”: osoby"
+    },
     {
       "ts": "2026-11-13T14:11:30.288Z",
       "user": "MichalS-AI",
