@@ -50,20 +50,6 @@
         "s2"
       ],
       "progress": 0,
-      "notes": "Wymaga: sposób działania i kolejność pracy linii (zad. I).\nSzacowany czas: 6 h.\nZależy od: 5.1, „I. Przygotowanie założeń do projektu”.",
-      "baselineStart": "2026-11-23",
-      "baselineEnd": "2026-12-03",
-      "id": "5.4",
-      "name": "Opracowanie algorytmu sterowania",
-      "start": "2026-11-23",
-      "end": "2026-12-03"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s2"
-      ],
-      "progress": 0,
       "notes": "Wymaga: wybrany sterownik i elementy układu (zad. II).\nSzacowany czas: 3 h.\nZależy od: 5.4, „II. Dobór elementów układu”.",
       "baselineStart": "2026-12-03",
       "baselineEnd": "2026-12-08",
@@ -146,6 +132,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:31.892Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.4 „Opracowanie algorytmu sterowania”"
+    },
     {
       "ts": "2026-11-13T13:39:27.535Z",
       "user": "jakubgasiorowski2lo1-pixel",
