@@ -951,10 +951,36 @@ ${hist.map(h => `<tr><td class="nw">${fmtTs(h.ts)}</td><td class="nw">${esc(h.us
 </body></html>`;
   }
 
+  /** Raport wyświetla się na tej samej stronie (bez nowego okna, działa też na telefonie). */
   function openReport() {
-    const w = window.open("", "_blank");
-    if (!w) { showMsg("Przeglądarka zablokowała nowe okno. Zezwól na wyskakujące okna dla tej strony.", "err"); return; }
-    w.document.open(); w.document.write(buildReport()); w.document.close();
+    try {
+      const doc = buildReport();
+      let css = doc.slice(doc.indexOf("<style>") + 7, doc.indexOf("</style>"));
+      css = css.split("\n").filter(l => !l.includes(".noprint")).join("\n");
+      css = css.replace(/([^{}]+)\{([^{}]*)\}/g, (m, sel, body) => {
+        sel = sel.trim();
+        if (sel.startsWith("@")) return m;
+        const scoped = sel.split(",").map(x => x.trim()).map(x => x === "body" ? "#reportView .rv-doc" : "#reportView .rv-doc " + x).join(", ");
+        return `${scoped} {${body}}\n`;
+      });
+      let body = doc.slice(doc.indexOf("<body>") + 6, doc.indexOf("</body>"));
+      body = body.replace(/<div class="noprint">[\s\S]*?<\/div>/, "").replace(/<script>[\s\S]*?<\/script>/, "");
+      let rv = $("#reportView");
+      if (!rv) { rv = el("div", { id: "reportView" }); document.body.append(rv); }
+      rv.innerHTML = `<style>${css}</style>
+        <div class="rv-bar"><b>Raport</b><span class="spacer"></span>
+          <button type="button" class="primary" id="rvPrint">Zapisz jako PDF / drukuj</button>
+          <button type="button" id="rvClose">Zamknij</button></div>
+        <div class="rv-doc">${body}</div>`;
+      rv.hidden = false;
+      document.body.classList.add("report-open");
+      $("#rvPrint").addEventListener("click", () => window.print());
+      $("#rvClose").addEventListener("click", () => { rv.hidden = true; document.body.classList.remove("report-open"); });
+      rv.scrollTop = 0;
+    } catch (e) {
+      console.error(e);
+      showMsg("Nie udało się przygotować raportu: " + e.message, "err");
+    }
   }
 
   window.KT5 = { state: S, repo: REPO, reload: () => loadData().then(render) };

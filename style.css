@@ -164,3 +164,17 @@ form.read-only .only-edit, form.read-only .only-new { display: none !important; 
 .tl .w.fri.off { color: var(--muted); background: repeating-linear-gradient(45deg, rgba(100,116,139,.15) 0 3px, transparent 3px 6px); font-weight: 400; }
 .tl .w.fri.is-today { background: #fee2e2; color: #991b1b; }
 .gantt.fri-mode .bar { border-radius: 4px; }
+
+/* ---------- raport ---------- */
+#reportView { position: fixed; inset: 0; z-index: 1000; background: #fff; overflow: auto; }
+#reportView[hidden] { display: none; }
+#reportView .rv-bar { position: sticky; top: 0; display: flex; gap: 8px; align-items: center; padding: 10px 20px; background: #f1f5f9; border-bottom: 1px solid var(--line); z-index: 2; }
+#reportView .rv-doc { padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
+body.report-open { overflow: hidden; }
+@media print {
+  body.report-open > *:not(#reportView) { display: none !important; }
+  body.report-open { overflow: visible; }
+  #reportView { position: static; overflow: visible; }
+  #reportView .rv-bar { display: none; }
+  #reportView .rv-doc { padding: 0; max-width: none; }
+}
