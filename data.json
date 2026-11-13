@@ -56,24 +56,6 @@
       "progress": 0,
       "notes": "",
       "baselineStart": "2026-10-12",
-      "baselineEnd": "2026-10-30",
-      "id": "2",
-      "name": "Koncepcja linii produkcyjnej",
-      "start": "2026-10-12",
-      "end": "2026-10-30"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2026-10-12",
       "baselineEnd": "2026-10-16",
       "id": "2.1",
       "name": "Podział prac i harmonogram",
@@ -341,6 +323,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:23:01.310Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 2 „Koncepcja linii produkcyjnej”"
+    },
     {
       "ts": "2026-11-13T13:22:55.208Z",
       "user": "jakubgasiorowski2lo1-pixel",
