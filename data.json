@@ -50,20 +50,6 @@
         "s2"
       ],
       "progress": 0,
-      "notes": "Szacowany czas: 4 h.\nZależy od: 5.6, „VIII. Program HMI”.",
-      "baselineStart": "2027-01-03",
-      "baselineEnd": "2027-01-10",
-      "id": "5.7",
-      "name": "Połączenie programu z HMI",
-      "start": "2027-01-03",
-      "end": "2027-01-10"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s2"
-      ],
-      "progress": 0,
       "notes": "Szacowany czas: 2 h.\nZależy od: 8.1.",
       "baselineStart": "2027-01-20",
       "baselineEnd": "2027-01-23",
@@ -104,6 +90,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:47.420Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.7 „Połączenie programu z HMI”"
+    },
     {
       "ts": "2026-11-13T13:39:42.810Z",
       "user": "jakubgasiorowski2lo1-pixel",
