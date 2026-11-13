@@ -53,13 +53,18 @@
       "baselineEnd": "2027-01-22",
       "id": "B1",
       "name": "Bufor na obsuwy i zadania niezaplanowane",
-      "start": "2027-01-11",
-      "end": "2027-01-22",
+      "start": "2027-01-18",
+      "end": "2027-01-29",
       "usedDays": 0,
       "usage": []
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:40:30.808Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "B1 „Bufor na obsuwy i zadania niezaplanowane”: termin 11.01–22.01 → 18.01–29.01"
+    },
     {
       "ts": "2026-11-13T13:39:56.946Z",
       "user": "jakubgasiorowski2lo1-pixel",
