@@ -52,13 +52,25 @@
   ],
   "tasks": [
     {
-      "id": "1",
-      "name": "Przygotowanie założeń do projektu",
       "type": "task",
-      "start": "2026-11-20",
-      "end": "2026-11-20",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": "I. Sposób działania i kolejność pracy linii.",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-20",
+      "id": "1",
+      "name": "Przygotowanie założeń do projektu",
+      "start": "2026-11-20",
+      "end": "2026-11-20"
+    },
+    {
+      "type": "task",
       "owners": [
         "s1",
         "s2",
@@ -67,16 +79,16 @@
         "s5"
       ],
       "progress": 0,
-      "notes": "I. Sposób działania i kolejność pracy linii."
-    },
-    {
-      "id": "2",
-      "name": "Dobór elementów układu",
-      "type": "task",
-      "start": "2026-11-27",
-      "end": "2026-11-27",
+      "notes": "II. Sterownik PLC, czujniki i elementy wykonawcze.",
       "baselineStart": "2026-11-27",
       "baselineEnd": "2026-11-27",
+      "id": "2",
+      "name": "Dobór elementów układu",
+      "start": "2026-11-27",
+      "end": "2026-11-27"
+    },
+    {
+      "type": "task",
       "owners": [
         "s1",
         "s2",
@@ -85,16 +97,16 @@
         "s5"
       ],
       "progress": 0,
-      "notes": "II. Sterownik PLC, czujniki i elementy wykonawcze."
-    },
-    {
-      "id": "3",
-      "name": "Opis działania sterowania (dla operatora/ów)",
-      "type": "task",
-      "start": "2027-01-15",
-      "end": "2027-01-22",
+      "notes": "III. Na podstawie gotowego programu PLC i ekranów HMI.",
       "baselineStart": "2027-01-15",
       "baselineEnd": "2027-01-22",
+      "id": "3",
+      "name": "Opis działania sterowania (dla operatora/ów)",
+      "start": "2027-01-15",
+      "end": "2027-01-22"
+    },
+    {
+      "type": "task",
       "owners": [
         "s1",
         "s2",
@@ -103,16 +115,16 @@
         "s5"
       ],
       "progress": 0,
-      "notes": "III. Na podstawie gotowego programu PLC i ekranów HMI."
-    },
-    {
+      "notes": "IV.",
+      "baselineStart": "2026-12-04",
+      "baselineEnd": "2026-12-11",
       "id": "4",
       "name": "Lista i koszty elementów układu",
-      "type": "task",
       "start": "2026-12-04",
-      "end": "2026-12-11",
-      "baselineStart": "2026-12-04",
-      "baselineEnd": "2026-12-11",
+      "end": "2026-12-11"
+    },
+    {
+      "type": "task",
       "owners": [
         "s1",
         "s2",
@@ -121,16 +133,16 @@
         "s5"
       ],
       "progress": 0,
-      "notes": "IV."
-    },
-    {
+      "notes": "V. Połączenia oraz lista wejść i wyjść PLC (potrzebna do programu PLC).",
+      "baselineStart": "2026-12-14",
+      "baselineEnd": "2027-01-09",
       "id": "5",
       "name": "Schemat elektryczny układu",
+      "start": "2026-12-14",
+      "end": "2027-01-09"
+    },
+    {
       "type": "task",
-      "start": "2026-12-04",
-      "end": "2026-12-11",
-      "baselineStart": "2026-12-04",
-      "baselineEnd": "2026-12-11",
       "owners": [
         "s1",
         "s2",
@@ -139,34 +151,16 @@
         "s5"
       ],
       "progress": 0,
-      "notes": "V. Połączenia oraz lista wejść i wyjść PLC (potrzebna do programu PLC)."
-    },
-    {
+      "notes": "VI. Działanie siłowników i zaworów.",
+      "baselineStart": "2026-12-04",
+      "baselineEnd": "2026-12-11",
       "id": "6",
       "name": "Schemat pneumatyczny układu",
-      "type": "task",
       "start": "2026-12-04",
-      "end": "2026-12-11",
-      "baselineStart": "2026-12-04",
-      "baselineEnd": "2026-12-11",
-      "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "VI. Działanie siłowników i zaworów."
+      "end": "2026-12-11"
     },
     {
-      "id": "7",
-      "name": "Program PLC",
       "type": "task",
-      "start": "2026-11-20",
-      "end": "2027-01-22",
-      "baselineStart": "2026-11-20",
-      "baselineEnd": "2027-01-22",
       "owners": [
         "s1",
         "s2",
@@ -176,16 +170,16 @@
       ],
       "progress": 0,
       "notes": "VII. Razem 40 h, rozłożone na piątki po ok. 5 h.",
+      "baselineStart": "2026-11-20",
+      "baselineEnd": "2027-01-22",
+      "id": "7",
+      "name": "Program PLC",
+      "start": "2026-11-20",
+      "end": "2027-01-22",
       "hours": 40
     },
     {
-      "id": "7.1",
-      "name": "Analiza dokumentacji i założeń projektu",
       "type": "task",
-      "start": "2026-11-20",
-      "end": "2026-11-20",
-      "baselineStart": "2026-11-20",
-      "baselineEnd": "2026-11-20",
       "owners": [
         "s1",
         "s2",
@@ -195,16 +189,16 @@
       ],
       "progress": 0,
       "notes": "20.11: 4 h",
+      "baselineStart": "2026-11-20",
+      "baselineEnd": "2026-11-20",
+      "id": "7.1",
+      "name": "Analiza dokumentacji i założeń projektu",
+      "start": "2026-11-20",
+      "end": "2026-11-20",
       "hours": 4
     },
     {
-      "id": "7.2",
-      "name": "Konfiguracja projektu w TIA Portal",
       "type": "task",
-      "start": "2026-11-20",
-      "end": "2026-11-27",
-      "baselineStart": "2026-11-20",
-      "baselineEnd": "2026-11-27",
       "owners": [
         "s1",
         "s2",
@@ -214,16 +208,16 @@
       ],
       "progress": 0,
       "notes": "20.11: 1 h, 27.11: 2 h. Wymaga wybranego sterownika (zad. 2).",
+      "baselineStart": "2026-11-20",
+      "baselineEnd": "2026-11-27",
+      "id": "7.2",
+      "name": "Konfiguracja projektu w TIA Portal",
+      "start": "2026-11-20",
+      "end": "2026-11-27",
       "hours": 3
     },
     {
-      "id": "7.3",
-      "name": "Opracowanie algorytmu sterowania",
       "type": "task",
-      "start": "2026-11-27",
-      "end": "2026-12-04",
-      "baselineStart": "2026-11-27",
-      "baselineEnd": "2026-12-04",
       "owners": [
         "s1",
         "s2",
@@ -233,16 +227,16 @@
       ],
       "progress": 0,
       "notes": "27.11: 3 h, 4.12: 3 h. Wymaga założeń (zad. 1).",
+      "baselineStart": "2026-11-27",
+      "baselineEnd": "2026-12-04",
+      "id": "7.3",
+      "name": "Opracowanie algorytmu sterowania",
+      "start": "2026-11-27",
+      "end": "2026-12-04",
       "hours": 6
     },
     {
-      "id": "7.4",
-      "name": "Napisanie programu PLC",
       "type": "task",
-      "start": "2026-12-04",
-      "end": "2027-01-08",
-      "baselineStart": "2026-12-04",
-      "baselineEnd": "2027-01-08",
       "owners": [
         "s1",
         "s2",
@@ -252,16 +246,16 @@
       ],
       "progress": 0,
       "notes": "4.12: 2 h, 11.12: 5 h, 18.12: 5 h, 8.01: 3 h. Wymaga listy I/O (zad. 5) i schematu pneumatycznego (zad. 6).",
+      "baselineStart": "2026-12-04",
+      "baselineEnd": "2027-01-08",
+      "id": "7.4",
+      "name": "Napisanie programu PLC",
+      "start": "2026-12-04",
+      "end": "2027-01-08",
       "hours": 15
     },
     {
-      "id": "7.5",
-      "name": "Połączenie programu z HMI",
       "type": "task",
-      "start": "2027-01-08",
-      "end": "2027-01-15",
-      "baselineStart": "2027-01-08",
-      "baselineEnd": "2027-01-15",
       "owners": [
         "s1",
         "s2",
@@ -271,16 +265,16 @@
       ],
       "progress": 0,
       "notes": "8.01: 2 h, 15.01: 2 h. Wymaga programu HMI (zad. 8).",
+      "baselineStart": "2027-01-08",
+      "baselineEnd": "2027-01-15",
+      "id": "7.5",
+      "name": "Połączenie programu z HMI",
+      "start": "2027-01-08",
+      "end": "2027-01-15",
       "hours": 4
     },
     {
-      "id": "7.6",
-      "name": "Testowanie i poprawki",
       "type": "task",
-      "start": "2027-01-15",
-      "end": "2027-01-22",
-      "baselineStart": "2027-01-15",
-      "baselineEnd": "2027-01-22",
       "owners": [
         "s1",
         "s2",
@@ -290,16 +284,16 @@
       ],
       "progress": 0,
       "notes": "15.01: 3 h, 22.01: 3 h. Symulacja pracy linii (np. PLCSIM), poprawki PLC i HMI.",
+      "baselineStart": "2027-01-15",
+      "baselineEnd": "2027-01-22",
+      "id": "7.6",
+      "name": "Testowanie i poprawki",
+      "start": "2027-01-15",
+      "end": "2027-01-22",
       "hours": 6
     },
     {
-      "id": "7.7",
-      "name": "Przygotowanie końcowej wersji programu",
       "type": "task",
-      "start": "2027-01-22",
-      "end": "2027-01-22",
-      "baselineStart": "2027-01-22",
-      "baselineEnd": "2027-01-22",
       "owners": [
         "s1",
         "s2",
@@ -309,34 +303,34 @@
       ],
       "progress": 0,
       "notes": "22.01: 2 h",
+      "baselineStart": "2027-01-22",
+      "baselineEnd": "2027-01-22",
+      "id": "7.7",
+      "name": "Przygotowanie końcowej wersji programu",
+      "start": "2027-01-22",
+      "end": "2027-01-22",
       "hours": 2
     },
     {
-      "id": "8",
-      "name": "Program HMI",
       "type": "task",
-      "start": "2026-12-11",
-      "end": "2027-01-08",
+      "owners": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "progress": 0,
+      "notes": "VIII. Ekrany operatora; projekt HMI w tym samym projekcie TIA Portal.",
       "baselineStart": "2026-12-11",
       "baselineEnd": "2027-01-08",
-      "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "VIII. Ekrany operatora; projekt HMI w tym samym projekcie TIA Portal."
+      "id": "8",
+      "name": "Program HMI",
+      "start": "2026-12-11",
+      "end": "2027-01-08"
     },
     {
-      "id": "9",
-      "name": "Symulacja układu",
       "type": "task",
-      "start": "2027-01-15",
-      "end": "2027-01-22",
-      "baselineStart": "2027-01-15",
-      "baselineEnd": "2027-01-22",
       "owners": [
         "s1",
         "s2",
@@ -345,7 +339,13 @@
         "s5"
       ],
       "progress": 0,
-      "notes": "IX."
+      "notes": "IX.",
+      "baselineStart": "2027-01-15",
+      "baselineEnd": "2027-01-22",
+      "id": "9",
+      "name": "Symulacja układu",
+      "start": "2027-01-15",
+      "end": "2027-01-22"
     },
     {
       "type": "buffer",
@@ -358,10 +358,17 @@
       "name": "Bufor na obsuwy i zadania niezaplanowane",
       "start": "2027-01-18",
       "end": "2027-01-29",
-      "extraDays": 0
+      "extraDays": 0,
+      "usedDays": 0,
+      "usage": []
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:51:24.780Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "5 „Schemat elektryczny układu”: termin 4.12–11.12 → 14.12–9.01 (nowy plan)"
+    },
     {
       "ts": "2026-11-13T13:43:37.632Z",
       "user": "claude",
