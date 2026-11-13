@@ -224,11 +224,7 @@
     {
       "type": "task",
       "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s4"
       ],
       "progress": 0,
       "notes": "V. Połączenia oraz lista wejść i wyjść PLC (potrzebna do programu PLC).",
@@ -513,6 +509,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:18:10.767Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "5 „Schemat elektryczny układu”: osoby"
+    },
     {
       "ts": "2026-11-13T14:17:39.594Z",
       "user": "jakubgasiorowski2lo1-pixel",
