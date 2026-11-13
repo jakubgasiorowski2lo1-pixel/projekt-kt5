@@ -45,22 +45,6 @@
   ],
   "tasks": [
     {
-      "type": "task",
-      "owners": [
-        "s1",
-        "s2",
-        "s3"
-      ],
-      "progress": 0,
-      "notes": "Symulacja pracy linii (np. PLCSIM), poprawki programu PLC i HMI.\nSzacowany czas: 6 h.\nZależy od: 5.7.",
-      "baselineStart": "2027-01-10",
-      "baselineEnd": "2027-01-20",
-      "id": "8.1",
-      "name": "Testowanie i poprawki",
-      "start": "2027-01-10",
-      "end": "2027-01-20"
-    },
-    {
       "type": "buffer",
       "owners": [],
       "progress": 0,
@@ -76,6 +60,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:56.946Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 8.1 „Testowanie i poprawki”"
+    },
     {
       "ts": "2026-11-13T13:39:52.337Z",
       "user": "jakubgasiorowski2lo1-pixel",
