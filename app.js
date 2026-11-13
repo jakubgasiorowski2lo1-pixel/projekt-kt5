@@ -102,7 +102,7 @@
         const fresh = await fetchRemote();
         mutate(fresh.data);
         fresh.data.history.unshift({ ts: new Date().toISOString(), user: S.user ? S.user.login : "?", text });
-        fresh.data.history = fresh.data.history.slice(0, 300);
+        fresh.data.history = fresh.data.history.slice(0, 3000);
         sortTasks(fresh.data);
         const body = {
           message: `[harmonogram] ${text}`.slice(0, 200),
@@ -777,6 +777,7 @@
     ["#filterPerson", "#filterStatus"].forEach(s => $(s).addEventListener("change", renderGantt));
     $("#zoom").addEventListener("change", () => { renderGantt(); scrollToToday(); });
     $("#btnToday").addEventListener("click", scrollToToday);
+    $("#btnReport").addEventListener("click", openReport);
     $("#btnReload").addEventListener("click", async () => {
       try { await loadData(); render(); showMsg("Pobrano najnowsze dane.", "ok", 2500); } catch (e) { showMsg(e.message, "err"); }
     });
@@ -824,6 +825,136 @@
     } catch (e) {
       showMsg("Błąd wczytywania danych: " + e.message, "err");
     }
+  }
+
+  // ---------- raport PDF (druk do PDF z przeglądarki) ----------
+  const esc = v => String(v ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fmtTs = ts => { const d = new Date(ts); return `${d.toLocaleDateString("pl-PL")} ${d.toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })}`; };
+
+  function historyFor(id) {
+    const q = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`^(${q} „|Dodano (zadanie|bufor) ${q} „)`), del = new RegExp(`^Usunięto ${q} „`);
+    const out = [];
+    for (const h of S.data.history) { // od najnowszych; wcześniejsze wpisy dotyczą usuniętego zadania o tym numerze
+      if (del.test(h.text)) break;
+      if (re.test(h.text)) out.push(h);
+    }
+    return out;
+  }
+
+  function buildReport() {
+    const d = S.data, now = new Date();
+    const tasks = d.tasks.filter(t => t.type !== "buffer");
+    const buffers = d.tasks.filter(t => t.type === "buffer");
+    const bst = bufferState(d);
+    const statusCls = { ok: "ok", done: "done", late: "late", risk: "risk", buffer: "" };
+    const totalDays = tasks.reduce((a, t) => a + dayCount(t.start, t.end), 0) || 1;
+    const doneW = tasks.reduce((a, t) => a + dayCount(t.start, t.end) * t.progress / 100, 0);
+    const infos = tasks.map(taskInfo);
+    const cnt = st => infos.filter(i => i.status === st).length;
+
+    const taskRow = (t, who) => {
+      const i = taskInfo(t);
+      const slip = i.slipDays ? `+${workUnit(d, countWork(d, toDay(t.baselineEnd) + 1, toDay(t.end)))}` : "–";
+      const full = who !== null;
+      const others = (t.owners || []).filter(o => o !== who).map(o => (person(o) || { name: o }).name);
+      const ch = full ? historyFor(t.id) : [];
+      return `<tr>
+        <td class="id">${esc(t.id)}</td>
+        <td><b>${esc(t.name)}</b>${t.unplanned ? ' <span class="tag">niezaplanowane</span>' : ""}
+          ${full ? (others.length ? `<div class="small">razem z: ${esc(others.join(", "))}</div>` : "") : `<div class="small">${esc(ownersLabel(t) || "brak osoby")}</div>`}
+          ${full && t.notes ? `<div class="notes">${esc(t.notes).replace(/\n/g, "<br>")}</div>` : ""}
+          ${ch.length ? `<details open><summary>Zmiany (${ch.length})</summary><ul>${ch.map(h => `<li>${fmtTs(h.ts)} · ${esc(h.user)}: ${esc(h.text)}</li>`).join("")}</ul></details>` : ""}
+        </td>
+        <td class="nw">${fmt(t.start)}<br>– ${fmt(t.end)}</td>
+        <td class="nw">${fmt(t.baselineStart)}<br>– ${fmt(t.baselineEnd)}</td>
+        <td class="c">${t.hours ? t.hours + " h" : "–"}</td>
+        <td class="c"><div class="pb"><i style="width:${t.progress}%"></i></div>${t.progress}%</td>
+        <td class="c"><span class="st ${statusCls[i.status]}">${STATUS_LABEL[i.status]}</span></td>
+        <td class="c">${slip}</td>
+      </tr>`;
+    };
+    const table = (list, who) => list.length ? `<table>
+      <thead><tr><th>Nr</th><th>Zadanie</th><th>Termin</th><th>Plan bazowy</th><th>Czas</th><th>Postęp</th><th>Status</th><th>Obsuwa</th></tr></thead>
+      <tbody>${list.map(t => taskRow(t, who)).join("")}</tbody></table>` : `<p class="muted">Brak przypisanych zadań.</p>`;
+
+    const people = d.team.map(p => {
+      const mine = tasks.filter(t => (t.owners || []).includes(p.id));
+      if (!mine.length && p.id === "p") return "";
+      const hrs = mine.reduce((a, t) => a + (t.hours || 0), 0);
+      const late = mine.filter(t => taskInfo(t).status === "late").length;
+      const done = mine.filter(t => t.progress >= 100).length;
+      return `<section class="person">
+        <h2><span class="dot" style="background:${esc(p.color || "#999")}"></span>${esc(p.name)} <span class="role">${esc(p.role || "")}</span></h2>
+        <p class="small">Zadań: ${mine.length} · ukończonych: ${done} · po terminie: ${late}${hrs ? ` · szacowany czas: ${hrs} h` : ""}</p>
+        ${table(mine, p.id)}
+      </section>`;
+    }).join("");
+
+    const nobody = tasks.filter(t => !(t.owners || []).length);
+    const bufHtml = buffers.map(b => {
+      const st = bst[b.id];
+      return `<tr><td class="id">${esc(b.id)}</td><td><b>${esc(b.name)}</b>${st.items.length ? `<ul>${st.items.map(it => `<li>${esc(it.taskId)} ${esc(it.name)}: ${workUnit(d, it.days)} (${esc(it.reason)})</li>`).join("")}</ul>` : ""}</td>
+        <td class="nw">${fmt(b.start)} – ${fmt(b.end)}</td><td class="c">${st.used} / ${workUnit(d, st.capacity)}</td></tr>`;
+    }).join("");
+    const hist = [...d.history].reverse();
+
+    return `<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8">
+<title>Raport – ${esc(d.project.name)} – ${now.toLocaleDateString("pl-PL")}</title>
+<style>
+  @page { size: A4 landscape; margin: 12mm; }
+  body { font: 11px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #0f172a; margin: 0; }
+  h1 { font-size: 20px; margin: 0 0 2px; } h2 { font-size: 15px; margin: 18px 0 4px; border-bottom: 2px solid #e2e8f0; padding-bottom: 3px; }
+  .role { font-weight: 400; color: #64748b; font-size: 12px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+  .small { font-size: 10px; color: #475569; margin: 2px 0; } .muted { color: #64748b; }
+  .summary { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .summary div { border: 1px solid #e2e8f0; border-radius: 6px; padding: 5px 10px; } .summary b { font-size: 14px; display: block; }
+  table { width: 100%; border-collapse: collapse; margin-top: 4px; page-break-inside: auto; }
+  tr { page-break-inside: avoid; }
+  th { background: #f1f5f9; text-align: left; font-size: 10px; padding: 4px 6px; border-bottom: 1px solid #cbd5e1; }
+  td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  td.id { font-weight: 600; color: #475569; width: 34px; } td.c { text-align: center; white-space: nowrap; } td.nw { white-space: nowrap; }
+  .notes { font-size: 10px; color: #334155; margin-top: 2px; white-space: normal; }
+  details ul, td ul { margin: 2px 0 0; padding-left: 16px; font-size: 10px; color: #334155; } summary { font-size: 10px; color: #1e40af; }
+  .pb { width: 60px; height: 6px; background: #e2e8f0; border-radius: 3px; margin: 2px auto; overflow: hidden; } .pb i { display: block; height: 100%; background: #2563eb; }
+  .st { padding: 1px 6px; border-radius: 8px; font-size: 10px; } .st.ok { background: #e0f2fe; } .st.done { background: #dcfce7; } .st.late { background: #fee2e2; color: #991b1b; } .st.risk { background: #fef3c7; }
+  .tag { font-size: 9px; background: #fae8ff; color: #86198f; border-radius: 4px; padding: 0 4px; }
+  .person { page-break-before: always; } .person:first-of-type { page-break-before: auto; }
+  .hist { page-break-before: always; } .hist td { font-size: 10px; }
+  .noprint { position: fixed; top: 8px; right: 8px; } @media print { .noprint { display: none; } }
+  .noprint button { font: inherit; font-size: 13px; padding: 6px 14px; background: #2563eb; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+</style></head><body>
+<div class="noprint"><button onclick="window.print()">Zapisz jako PDF / drukuj</button></div>
+<h1>${esc(d.project.name)} – raport postępu</h1>
+<div class="small">${esc(d.project.description || "")}</div>
+<div class="small">Wygenerowano: ${fmtTs(now)} · termin końcowy: ${d.project.deadline ? fmt(d.project.deadline) : "–"} · źródło: ${esc(REPO.owner)}/${esc(REPO.repo)}</div>
+<div class="summary">
+  <div><b>${Math.round(doneW / totalDays * 100)}%</b>postęp całości</div>
+  <div><b>${cnt("done")} / ${tasks.length}</b>ukończone</div>
+  <div><b>${cnt("late")}</b>po terminie</div>
+  <div><b>${cnt("risk")}</b>zagrożone</div>
+  <div><b>${infos.filter(i => i.slipDays > 0).length}</b>z obsuwą</div>
+  <div><b>${d.history.length}</b>zmian w historii</div>
+</div>
+<h2>Wszystkie zadania</h2>
+<p class="small">Szczegóły, notatki i zmiany każdego zadania są w częściach dla poszczególnych osób.</p>
+${table(tasks, null)}
+${buffers.length ? `<h2>Bufory</h2><table><thead><tr><th>Nr</th><th>Bufor i zużycie</th><th>Okres</th><th>Zużyto</th></tr></thead><tbody>${bufHtml}</tbody></table>` : ""}
+${people}
+${nobody.length ? `<section class="person"><h2>Zadania bez przypisanej osoby</h2>${table(nobody, "")}</section>` : ""}
+<section class="hist"><h2>Historia wszystkich zmian (${hist.length})</h2>
+<table><thead><tr><th>Data</th><th>Kto</th><th>Zmiana</th></tr></thead><tbody>
+${hist.map(h => `<tr><td class="nw">${fmtTs(h.ts)}</td><td class="nw">${esc(h.user)}</td><td>${esc(h.text)}</td></tr>`).join("")}
+</tbody></table></section>
+<script>setTimeout(() => window.print(), 400);<\/script>
+</body></html>`;
+  }
+
+  function openReport() {
+    const w = window.open("", "_blank");
+    if (!w) { showMsg("Przeglądarka zablokowała nowe okno. Zezwól na wyskakujące okna dla tej strony.", "err"); return; }
+    w.document.open(); w.document.write(buildReport()); w.document.close();
   }
 
   window.KT5 = { state: S, repo: REPO, reload: () => loadData().then(render) };
