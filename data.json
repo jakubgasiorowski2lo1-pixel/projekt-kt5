@@ -201,20 +201,6 @@
       "end": "2027-01-20"
     },
     {
-      "id": "9",
-      "name": "chuj",
-      "type": "task",
-      "start": "2026-11-13",
-      "end": "2026-11-26",
-      "baselineStart": "2026-11-13",
-      "baselineEnd": "2026-11-26",
-      "owners": [
-        "s4"
-      ],
-      "progress": 0,
-      "notes": ""
-    },
-    {
       "type": "buffer",
       "owners": [],
       "progress": 0,
@@ -230,6 +216,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:37:14.895Z",
+      "user": "Anoisek",
+      "text": "Usunięto 9 „chuj”"
+    },
     {
       "ts": "2026-11-13T13:37:01.596Z",
       "user": "Anoisek",
