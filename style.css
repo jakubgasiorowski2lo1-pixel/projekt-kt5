@@ -153,3 +153,14 @@ form.read-only .only-edit, form.read-only .only-new { display: none !important; 
   .panels { grid-template-columns: 1fr; }
   .gantt-wrap { margin: 0 8px; }
 }
+
+/* ---------- tryb „piątki” ---------- */
+.gantt.fri-mode .track {
+  background-image: repeating-linear-gradient(to right, transparent 0 calc(var(--dayW) - 1px), rgba(148,163,184,.45) calc(var(--dayW) - 1px) var(--dayW));
+  background-position: 0 0;
+}
+.gantt.fri-mode .row.head .track { background: #fff; }
+.tl .w.fri { text-align: center; color: #1e40af; font-weight: 500; }
+.tl .w.fri.off { color: var(--muted); background: repeating-linear-gradient(45deg, rgba(100,116,139,.15) 0 3px, transparent 3px 6px); font-weight: 400; }
+.tl .w.fri.is-today { background: #fee2e2; color: #991b1b; }
+.gantt.fri-mode .bar { border-radius: 4px; }

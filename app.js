@@ -272,6 +272,7 @@
       ? `Termin końcowy: <b>${fmt(d.project.deadline)}</b><br><span class="${left < 14 ? "err" : ""}">${left >= 0 ? "zostało " + days(left) : "termin minął " + days(-left) + " temu"}</span>`
       : "";
     $("#dataLink").href = `https://github.com/${REPO.owner}/${REPO.repo}/blob/${CFG.branch}/${CFG.path}`;
+    document.body.classList.toggle("fri-proj", hasClassDays());
     renderAuth(); renderFilters(); renderStats(); renderGantt(); renderTeam(); renderHistory();
     document.body.classList.toggle("can-edit", !!S.token);
   }
@@ -331,39 +332,78 @@
     });
   }
 
+  /** Oś czasu: tryb „piątki” (kolumna = dzień zajęć) albo „dni” (kolumna = dzień). */
+  function buildAxis(d, min, max) {
+    const [mode, w] = $("#zoom").value.split(":");
+    const cls = d.project.classDays || [];
+    const fri = mode === "f" && cls.length;
+    const colW = +w;
+    if (!fri) {
+      const cols = []; for (let x = min; x <= max; x++) cols.push(x);
+      return { fri: false, colW, cols, xs: day => (day - min) * colW, xe: day => (day - min + 1) * colW,
+        xToday: day => (day - min) * colW + colW / 2 };
+    }
+    const cols = []; for (let x = min; x <= max; x++) if (cls.includes(new Date(x * DAY).getUTCDay())) cols.push(x);
+    const firstGE = day => { let i = cols.findIndex(c => c >= day); return i < 0 ? cols.length : i; };
+    const lastLE = day => { let i = -1; cols.forEach((c, k) => { if (c <= day) i = k; }); return i; };
+    const xs = day => firstGE(day) * colW;
+    const xe = day => (lastLE(day) + 1) * colW;
+    return { fri: true, colW, cols, xs, xe,
+      xToday: day => cols.includes(day) ? xs(day) + colW / 2 : xe(day) };
+  }
+
   function renderGantt() {
-    const d = S.data, dayW = +$("#zoom").value, today = todayDay();
+    const d = S.data, today = todayDay();
     const all = d.tasks;
     const starts = all.map(t => Math.min(toDay(t.start), toDay(t.baselineStart || t.start)));
     const ends = all.map(t => Math.max(toDay(t.end), toDay(t.baselineEnd || t.end)));
     let min = Math.min(toDay(d.project.start || fromDay(today)), ...starts);
     let max = Math.max(toDay(d.project.deadline || fromDay(today)), ...ends, today);
-    min -= ((new Date(min * DAY).getUTCDay() + 6) % 7) + 0; // od poniedziałku
+    min -= ((new Date(min * DAY).getUTCDay() + 6) % 7); // od poniedziałku
     max += 7;
-    const n = max - min + 1, W = n * dayW;
-    const x = day => (day - min) * dayW;
+    const A = buildAxis(d, min, max);
+    const W = A.fri ? A.cols.length * A.colW : (max - min + 1) * A.colW;
+    const noClass = d.project.noClassDates || [];
 
     const g = $("#gantt"); g.innerHTML = "";
-    g.style.setProperty("--dayW", dayW + "px");
+    g.classList.toggle("fri-mode", A.fri);
+    g.style.setProperty("--dayW", A.colW + "px");
     g.style.setProperty("--labelW", LABEL_W + "px");
     g.style.width = (LABEL_W + W) + "px";
 
-    // nagłówek: miesiące + tygodnie
+    // nagłówek: miesiące + kolumny
     const months = el("div", { class: "tl months" }), weeks = el("div", { class: "tl weeks" });
-    for (let dd = min; dd <= max; dd++) {
-      const dt = new Date(dd * DAY);
-      if (dt.getUTCDate() === 1 || dd === min) {
-        const endM = Math.min(max, Math.round(Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth() + 1, 1) / DAY) - 1);
-        months.append(el("div", { class: "m", style: `left:${x(dd)}px;width:${(endM - dd + 1) * dayW}px` }, `${MONTHS[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`));
+    if (A.fri) {
+      let k = 0;
+      while (k < A.cols.length) {
+        const dt = new Date(A.cols[k] * DAY), m = dt.getUTCMonth();
+        let j = k; while (j + 1 < A.cols.length && new Date(A.cols[j + 1] * DAY).getUTCMonth() === m) j++;
+        months.append(el("div", { class: "m", style: `left:${k * A.colW}px;width:${(j - k + 1) * A.colW}px` }, `${MONTHS[m]} ${dt.getUTCFullYear()}`));
+        k = j + 1;
       }
-      if (dt.getUTCDay() === 1) {
-        weeks.append(el("div", { class: "w", style: `left:${x(dd)}px;width:${7 * dayW}px` }, dayW >= 10 ? fmtShort(fromDay(dd)) : String(dt.getUTCDate())));
+      A.cols.forEach((c, k2) => {
+        const ds = fromDay(c), off = noClass.includes(ds);
+        weeks.append(el("div", { class: "w fri" + (off ? " off" : "") + (c === today ? " is-today" : ""), style: `left:${k2 * A.colW}px;width:${A.colW}px`,
+          title: `${fmt(ds)}${off ? " – brak zajęć" : ""}` }, off ? `${fmtShort(ds)} wolne` : `pt ${fmtShort(ds)}`));
+      });
+    } else {
+      for (let dd = min; dd <= max; dd++) {
+        const dt = new Date(dd * DAY);
+        if (dt.getUTCDate() === 1 || dd === min) {
+          const endM = Math.min(max, Math.round(Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth() + 1, 1) / DAY) - 1);
+          months.append(el("div", { class: "m", style: `left:${A.xs(dd)}px;width:${(endM - dd + 1) * A.colW}px` }, `${MONTHS[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`));
+        }
+        if (dt.getUTCDay() === 1) {
+          weeks.append(el("div", { class: "w", style: `left:${A.xs(dd)}px;width:${7 * A.colW}px` }, A.colW >= 10 ? fmtShort(fromDay(dd)) : String(dt.getUTCDate())));
+        }
       }
     }
     g.append(el("div", { class: "row head" }, el("div", { class: "label" }, "Zadanie"), el("div", { class: "track" }, months, weeks)));
 
     const rows = visibleTasks();
     if (!rows.length) g.append(el("div", { class: "row empty" }, el("div", { class: "label muted" }, "Brak zadań dla wybranego filtra."), el("div", { class: "track" })));
+
+    const span = (a, b) => { const l = A.xs(a); let r = A.xe(b); if (r <= l) r = l + Math.max(8, A.colW / 3); return { l, w: r - l }; };
 
     rows.forEach(t => {
       const i = taskInfo(t);
@@ -373,46 +413,49 @@
       const bs = toDay(t.baselineStart || t.start), be = toDay(t.baselineEnd || t.end);
       const color = taskColor(t);
       const track = el("div", { class: "track" });
+      const P = span(s, e);
 
       // pierwotny plan (jeśli różny od aktualnego)
       if (bs !== s || be !== e) {
-        track.append(el("div", { class: "ghost", style: `left:${x(bs)}px;width:${(be - bs + 1) * dayW}px`, title: `Pierwotny plan: ${fmt(t.baselineStart)} – ${fmt(t.baselineEnd)}` }));
+        const G = span(bs, be);
+        if (G.l !== P.l || G.w !== P.w) track.append(el("div", { class: "ghost", style: `left:${G.l}px;width:${G.w}px`, title: `Pierwotny plan: ${fmt(t.baselineStart)} – ${fmt(t.baselineEnd)}` }));
       }
 
       if (isBuf) {
-        const len = e - s + 1, b = bufferState(d)[t.id];
+        const b = bufferState(d)[t.id];
         const frac = b.capacity ? Math.min(1, b.used / b.capacity) : (b.used ? 1 : 0);
         const tipB = [`Bufor ${fmt(t.start)} – ${fmt(t.end)}: ${workUnit(d, b.capacity)}`, `Zużyto: ${workUnit(d, b.used)}, zostało: ${workUnit(d, Math.max(0, b.capacity - b.used))}`,
           ...b.items.map(it => `• ${it.taskId} ${it.name}: ${workUnit(d, it.days)} (${it.reason})`)].join("\n");
-        const bar = el("div", { class: "bar buffer" + (b.used > b.capacity ? " over" : ""), style: `left:${x(s)}px;width:${len * dayW}px`, title: tipB });
+        const bar = el("div", { class: "bar buffer" + (b.used > b.capacity ? " over" : ""), style: `left:${P.l}px;width:${P.w}px`, title: tipB });
         bar.append(el("div", { class: "buf-used", style: `width:${frac * 100}%` }));
         bar.append(el("span", { class: "bar-txt" }, `${b.used}/${b.capacity}`));
         track.append(bar);
       } else {
-        // część planowa: od startu do min(koniec, koniec planu)
         const planEnd = Math.min(e, be);
         const tip = [
           `${t.id} ${t.name}`,
           `Termin: ${fmt(t.start)} – ${fmt(t.end)}`,
-          i.slipDays ? `Obsuwa: +${days(i.slipDays)} (plan: do ${fmt(t.baselineEnd)})` : "",
+          i.slipDays ? `Obsuwa: +${workUnit(d, countWork(d, be + 1, e))} (plan: do ${fmt(t.baselineEnd)})` : "",
           `Postęp: ${t.progress}% (oczekiwany ~${i.expected}%)`,
           t.hours ? `Szacowany czas: ${t.hours} h` : "",
           i.lateDays ? `Po terminie od ${days(i.lateDays)}` : "",
           `Osoby: ${ownersLabel(t)}`
         ].filter(Boolean).join("\n");
-        const bar = el("div", { class: `bar st-${i.status}` + (t.unplanned ? " unplanned" : "") + ((e - s + 1) * dayW < 40 ? " narrow" : ""), style: `left:${x(s)}px;width:${(e - s + 1) * dayW}px;--c:${color}`, title: tip });
-        const planW = planEnd >= s ? (planEnd - s + 1) / (e - s + 1) * 100 : 0;
-        bar.append(el("div", { class: "seg plan", style: `width:${planW}%` }));
-        if (i.slipDays) bar.append(el("div", { class: "seg slip", style: `left:${planW}%;width:${100 - planW}%` }));
+        const bar = el("div", { class: `bar st-${i.status}` + (t.unplanned ? " unplanned" : "") + (P.w < 40 ? " narrow" : ""), style: `left:${P.l}px;width:${P.w}px;--c:${color}`, title: tip });
+        const planW = planEnd >= s ? Math.min(100, (A.xe(planEnd) - P.l) / P.w * 100) : 0;
+        bar.append(el("div", { class: "seg plan", style: `width:${Math.max(0, planW)}%` }));
+        if (i.slipDays && planW < 100) bar.append(el("div", { class: "seg slip", style: `left:${Math.max(0, planW)}%;width:${100 - Math.max(0, planW)}%` }));
         bar.append(el("div", { class: "prog", style: `width:${t.progress}%` }));
         bar.append(el("span", { class: "bar-txt" }, `${t.progress}%`));
         track.append(bar);
         if (i.lateDays) {
-          track.append(el("div", { class: "late-ext", style: `left:${x(e + 1)}px;width:${i.lateDays * dayW}px`, title: `Po terminie: ${days(i.lateDays)}, postęp ${t.progress}%` }));
+          const l = P.l + P.w, r = Math.max(l + 6, A.xe(today));
+          track.append(el("div", { class: "late-ext", style: `left:${l}px;width:${r - l}px`, title: `Po terminie: ${days(i.lateDays)}, postęp ${t.progress}%` }));
         }
       }
 
-      const badge = el("span", { class: "badge b-" + i.status }, STATUS_LABEL[i.status] + (i.slipDays && !isBuf ? ` · +${i.slipDays}d` : ""));
+      const slipLbl = i.slipDays && !isBuf ? ` · +${A.fri ? countWork(d, be + 1, e) + " pt" : i.slipDays + "d"}` : "";
+      const badge = el("span", { class: "badge b-" + i.status }, STATUS_LABEL[i.status] + slipLbl);
       const label = el("div", { class: "label", style: `padding-left:${8 + depth * 16}px` },
         el("span", { class: "tid" }, t.id),
         el("span", { class: "tname" + (depth ? "" : " top-level") }, t.name, t.unplanned ? el("span", { class: "tag" }, "niezapl.") : ""),
@@ -422,26 +465,25 @@
       g.append(el("div", { class: "row" + (isBuf ? " is-buffer" : ""), "data-id": t.id, onclick: () => openTask(t.id) }, label, track));
     });
 
-    // weekendy i linia „dziś”
-    const offset = (new Date(min * DAY).getUTCDay() + 6) % 7; // 0 = poniedziałek
-    g.style.setProperty("--weekOffset", (-offset * dayW) + "px");
-    // dni zajęć (domyślnie piątki) i dni bez zajęć
-    const classDays = d.project.classDays || [5];
-    const noClass = d.project.noClassDates || [];
+    // tło: weekendy (tryb dni), dni zajęć i dni wolne
+    const offset = (new Date(min * DAY).getUTCDay() + 6) % 7;
+    g.style.setProperty("--weekOffset", (-offset * A.colW) + "px");
+    const classDays = d.project.classDays || [];
     for (let dd = min; dd <= max; dd++) {
       const ds = fromDay(dd);
       if (!classDays.includes(new Date(dd * DAY).getUTCDay())) continue;
       const off = noClass.includes(ds);
-      g.append(el("div", { class: off ? "noclass" : "classday", style: `left:${LABEL_W + x(dd)}px;width:${dayW}px`,
+      if (A.fri && !off) continue;
+      g.append(el("div", { class: off ? "noclass" : "classday", style: `left:${LABEL_W + A.xs(dd)}px;width:${A.colW}px`,
         title: off ? `${fmt(ds)}: brak zajęć` : `${fmt(ds)}: zajęcia` }));
     }
     if (today >= min && today <= max) {
-      g.append(el("div", { class: "today", style: `left:${LABEL_W + x(today) + dayW / 2}px`, title: "Dziś " + fmt(fromDay(today)) }));
+      g.append(el("div", { class: "today", style: `left:${LABEL_W + A.xToday(today)}px`, title: "Dziś " + fmt(fromDay(today)) }));
     }
     if (d.project.deadline) {
-      g.append(el("div", { class: "deadline", style: `left:${LABEL_W + x(toDay(d.project.deadline)) + dayW}px`, title: "Termin końcowy " + fmt(d.project.deadline) }));
+      g.append(el("div", { class: "deadline", style: `left:${LABEL_W + A.xe(toDay(d.project.deadline))}px`, title: "Termin końcowy " + fmt(d.project.deadline) }));
     }
-    S._x = x; S._min = min;
+    S._x = A.xs;
   }
 
   function scrollToToday() {
@@ -545,8 +587,9 @@
     f.id.value = t ? t.id : nextId(type);
     f.type.value = type;
     f.name.value = t ? t.name : "";
-    f.start.value = t ? t.start : today;
-    f.end.value = t ? t.end : fromDay(todayDay() + (type === "buffer" ? 6 : 13));
+    const nextCls = nextClassDay(todayDay());
+    setDateField("start", t ? t.start : nextCls);
+    setDateField("end", t ? t.end : nextCls);
     f.notes.value = t ? t.notes || "" : "";
     f.progress.value = t ? t.progress : 0;
     f.hours.value = t && t.hours ? t.hours : "";
@@ -592,6 +635,41 @@
     $("#btnDelete").hidden = readOnly || isNew;
     updateSlipBox();
     $("#taskDlg").showModal();
+  }
+
+  function hasClassDays() { return !!(S.data.project.classDays && S.data.project.classDays.length); }
+  function nextClassDay(day) {
+    if (!hasClassDays()) return fromDay(day);
+    let x = day; while (!S.data.project.classDays.includes(new Date(x * DAY).getUTCDay())) x++;
+    return fromDay(x);
+  }
+  /** W projekcie z dniami zajęć daty wybiera się z listy piątków. */
+  function setDateField(name, value) {
+    const form = $("#taskForm");
+    let fld = form.elements[name];
+    if (hasClassDays()) {
+      if (fld.tagName !== "SELECT") {
+        const sel = el("select", { name, required: "required" });
+        fld.replaceWith(sel); fld = sel;
+      }
+      const d = S.data, cls = d.project.classDays, off = d.project.noClassDates || [];
+      const from = Math.min(toDay(d.project.start || value), todayDay() - 28, toDay(value));
+      const to = Math.max(toDay(d.project.deadline || value) + 56, toDay(value));
+      fld.innerHTML = "";
+      for (let x = from; x <= to; x++) {
+        const ds = fromDay(x);
+        if (!cls.includes(new Date(x * DAY).getUTCDay()) && ds !== value) continue;
+        const wd = ["nd", "pn", "wt", "śr", "cz", "pt", "sb"][new Date(x * DAY).getUTCDay()];
+        fld.append(el("option", { value: ds }, `${wd} ${fmt(ds)}${off.includes(ds) ? " (brak zajęć)" : ""}`));
+      }
+      fld.value = value;
+    } else {
+      if (fld.tagName === "SELECT") {
+        const inp = el("input", { type: "date", name, required: "required" });
+        fld.replaceWith(inp); fld = inp;
+      }
+      fld.value = value;
+    }
   }
 
   function updateSlipBox() {
@@ -709,9 +787,11 @@
     $("#btnDelete").addEventListener("click", onDelete);
     const f = F();
     f.progress.addEventListener("input", () => ($("#progOut").textContent = f.progress.value + "%"));
-    f.end.addEventListener("change", updateSlipBox);
-    f.rebaseline.addEventListener("change", updateSlipBox);
-    f.start.addEventListener("change", () => { if (f.end.value && f.end.value < f.start.value) f.end.value = f.start.value; });
+    $("#taskForm").addEventListener("change", ev => {
+      const n = ev.target.name, ff = F();
+      if (n === "start" && ff.end.value && ff.end.value < ff.start.value) { ff.end.value = ff.start.value; }
+      if (n === "start" || n === "end" || n === "rebaseline") updateSlipBox();
+    });
 
     $("#loginForm").addEventListener("submit", async ev => {
       ev.preventDefault();
