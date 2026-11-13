@@ -159,20 +159,6 @@
     {
       "type": "task",
       "owners": [
-        "s2"
-      ],
-      "progress": 0,
-      "notes": "Szacowany czas: 6 h.",
-      "baselineStart": "2027-01-10",
-      "baselineEnd": "2027-01-20",
-      "id": "8",
-      "name": "Symulacja układu",
-      "start": "2027-01-10",
-      "end": "2027-01-20"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s1",
         "s2",
         "s3"
@@ -202,6 +188,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:13.315Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 8 „Symulacja układu”"
+    },
     {
       "ts": "2026-11-13T13:39:09.453Z",
       "user": "jakubgasiorowski2lo1-pixel",
