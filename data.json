@@ -103,21 +103,6 @@
     {
       "type": "task",
       "owners": [
-        "s1",
-        "s2"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2026-11-16",
-      "baselineEnd": "2027-01-08",
-      "id": "5.4",
-      "name": "Logika sterowania i tryby pracy",
-      "start": "2026-11-16",
-      "end": "2027-01-08"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s4"
       ],
       "progress": 0,
@@ -275,6 +260,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:23:27.990Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.4 „Logika sterowania i tryby pracy”"
+    },
     {
       "ts": "2026-11-13T13:23:22.814Z",
       "user": "jakubgasiorowski2lo1-pixel",
