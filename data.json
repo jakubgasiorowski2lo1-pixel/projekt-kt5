@@ -47,20 +47,6 @@
     {
       "type": "task",
       "owners": [
-        "s2"
-      ],
-      "progress": 0,
-      "notes": "Szacowany czas: 2 h.\nZależy od: 8.1.",
-      "baselineStart": "2027-01-20",
-      "baselineEnd": "2027-01-23",
-      "id": "5.8",
-      "name": "Przygotowanie końcowej wersji programu",
-      "start": "2027-01-20",
-      "end": "2027-01-23"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s1",
         "s2",
         "s3"
@@ -90,6 +76,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:52.337Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.8 „Przygotowanie końcowej wersji programu”"
+    },
     {
       "ts": "2026-11-13T13:39:47.420Z",
       "user": "jakubgasiorowski2lo1-pixel",
