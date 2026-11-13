@@ -351,11 +351,11 @@
       "progress": 0,
       "notes": "Implementacja zaprojektowanej wizualizacja w programie.\nProgres częściowo zależny od progresu Programu PLC.",
       "baselineStart": "2026-11-20",
-      "baselineEnd": "2027-01-05",
+      "baselineEnd": "2027-01-08",
       "id": "8.2",
       "name": "Implementacja wizualizacji",
       "start": "2026-11-20",
-      "end": "2027-01-05",
+      "end": "2027-01-08",
       "unplanned": true
     },
     {
@@ -393,6 +393,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:03:22.467Z",
+      "user": "MichalS-AI",
+      "text": "8.2 „Implementacja wizualizacji”: termin 20.11–5.01 → 20.11–8.01 (nowy plan)"
+    },
     {
       "ts": "2026-11-13T14:03:05.731Z",
       "user": "MichalS-AI",
