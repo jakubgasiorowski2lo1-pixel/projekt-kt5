@@ -73,6 +73,34 @@
       "end": "2026-12-18"
     },
     {
+      "id": "5",
+      "name": "Program PLC",
+      "type": "task",
+      "start": "2026-11-16",
+      "end": "2027-01-23",
+      "baselineStart": "2026-11-16",
+      "baselineEnd": "2027-01-23",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Potrzebne do programowania:\n- sposób działania i kolejność pracy linii (zad. I)\n- wybrany sterownik, czujniki i elementy wykonawcze (zad. II)\n- połączenia oraz lista wejść i wyjść PLC (zad. V)\n- działanie siłowników i zaworów (zad. VI)\nSzacowany czas: 40 h."
+    },
+    {
+      "id": "5.1",
+      "name": "Analiza dokumentacji i założeń projektu",
+      "type": "task",
+      "start": "2026-11-16",
+      "end": "2026-11-23",
+      "baselineStart": "2026-11-16",
+      "baselineEnd": "2026-11-23",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Potrzebne do programowania:\n- sposób działania i kolejność pracy linii (zad. I)\n- wybrany sterownik, czujniki i elementy wykonawcze (zad. II)\n- połączenia oraz lista wejść i wyjść PLC (zad. V)\n- działanie siłowników i zaworów (zad. VI)\nSzacowany czas: 4 h.\nZależy od: „Start realizacji zadań”."
+    },
+    {
       "type": "task",
       "owners": [
         "s3"
@@ -99,6 +127,76 @@
       "name": "Implementacja wizualizacji HMI",
       "start": "2026-11-30",
       "end": "2027-01-08"
+    },
+    {
+      "id": "5.4",
+      "name": "Opracowanie algorytmu sterowania",
+      "type": "task",
+      "start": "2026-11-23",
+      "end": "2026-12-03",
+      "baselineStart": "2026-11-23",
+      "baselineEnd": "2026-12-03",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Wymaga: sposób działania i kolejność pracy linii (zad. I).\nSzacowany czas: 6 h.\nZależy od: 5.1, „I. Przygotowanie założeń do projektu”."
+    },
+    {
+      "id": "5.5",
+      "name": "Konfiguracja projektu w TIA Portal",
+      "type": "task",
+      "start": "2026-12-03",
+      "end": "2026-12-08",
+      "baselineStart": "2026-12-03",
+      "baselineEnd": "2026-12-08",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Wymaga: wybrany sterownik i elementy układu (zad. II).\nSzacowany czas: 3 h.\nZależy od: 5.4, „II. Dobór elementów układu”."
+    },
+    {
+      "id": "5.6",
+      "name": "Napisanie programu PLC",
+      "type": "task",
+      "start": "2026-12-08",
+      "end": "2027-01-03",
+      "baselineStart": "2026-12-08",
+      "baselineEnd": "2027-01-03",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Wymaga: lista wejść i wyjść PLC (zad. V) oraz działanie siłowników i zaworów (zad. VI).\nSzacowany czas: 15 h.\nZależy od: 5.5, „V. Schemat elektryczny układu”, „VI. Schemat pneumatyczny układu”."
+    },
+    {
+      "id": "5.7",
+      "name": "Połączenie programu z HMI",
+      "type": "task",
+      "start": "2027-01-03",
+      "end": "2027-01-10",
+      "baselineStart": "2027-01-03",
+      "baselineEnd": "2027-01-10",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Szacowany czas: 4 h.\nZależy od: 5.6, „VIII. Program HMI”."
+    },
+    {
+      "id": "5.8",
+      "name": "Przygotowanie końcowej wersji programu",
+      "type": "task",
+      "start": "2027-01-20",
+      "end": "2027-01-23",
+      "baselineStart": "2027-01-20",
+      "baselineEnd": "2027-01-23",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Szacowany czas: 2 h.\nZależy od: 8.1."
     },
     {
       "type": "task",
@@ -157,6 +255,34 @@
       "end": "2027-01-15"
     },
     {
+      "id": "8",
+      "name": "Symulacja układu",
+      "type": "task",
+      "start": "2027-01-10",
+      "end": "2027-01-20",
+      "baselineStart": "2027-01-10",
+      "baselineEnd": "2027-01-20",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Szacowany czas: 6 h."
+    },
+    {
+      "id": "8.1",
+      "name": "Testowanie i poprawki",
+      "type": "task",
+      "start": "2027-01-10",
+      "end": "2027-01-20",
+      "baselineStart": "2027-01-10",
+      "baselineEnd": "2027-01-20",
+      "owners": [
+        "s2"
+      ],
+      "progress": 0,
+      "notes": "Symulacja pracy linii (np. PLCSIM), poprawki programu PLC i HMI.\nSzacowany czas: 6 h.\nZależy od: 5.7."
+    },
+    {
       "type": "buffer",
       "owners": [],
       "progress": 0,
@@ -172,6 +298,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:30:56.891Z",
+      "user": "claude (dla Bartka)",
+      "text": "Dodano harmonogram Bartka: 5 Program PLC (5.1, 5.4–5.8) i 8 Symulacja układu (8.1)"
+    },
     {
       "ts": "2026-11-13T13:23:55.068Z",
       "user": "jakubgasiorowski2lo1-pixel",
