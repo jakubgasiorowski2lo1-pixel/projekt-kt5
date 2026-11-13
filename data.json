@@ -106,8 +106,22 @@
       "end": "2027-01-22"
     },
     {
+      "type": "task",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": "",
+      "baselineStart": "2026-11-27",
+      "baselineEnd": "2026-11-27",
       "id": "3.1",
       "name": "Opracowanie koncepcji działania układu",
+      "start": "2026-11-27",
+      "end": "2026-11-27"
+    },
+    {
+      "id": "3.2",
+      "name": "Określenie funkcji i trybów pracy",
       "type": "task",
       "start": "2026-11-27",
       "end": "2026-11-27",
@@ -407,6 +421,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:08:35.860Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Dodano zadanie 3.2 „Określenie funkcji i trybów pracy” (27.11.2026–27.11.2026)"
+    },
     {
       "ts": "2026-11-13T14:08:06.267Z",
       "user": "jakubgasiorowski2lo1-pixel",
