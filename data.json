@@ -125,8 +125,8 @@
       "baselineEnd": "2027-01-08",
       "id": "5.3",
       "name": "Implementacja wizualizacji HMI",
-      "start": "2026-11-30",
-      "end": "2027-01-08"
+      "start": "2026-11-27",
+      "end": "2027-01-22"
     },
     {
       "type": "task",
@@ -298,6 +298,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:33:43.306Z",
+      "user": "MichalS-AI",
+      "text": "5.3 „Implementacja wizualizacji HMI”: termin 30.11–8.01 → 27.11–22.01"
+    },
     {
       "ts": "2026-11-13T13:32:48.427Z",
       "user": "MichalS-AI",
