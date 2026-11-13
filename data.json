@@ -453,6 +453,20 @@
       "unplanned": true
     },
     {
+      "id": "8.3",
+      "name": "Opracowanie wstępnego opisu działania układu",
+      "type": "task",
+      "start": "2027-01-08",
+      "end": "2027-01-08",
+      "baselineStart": "2027-01-08",
+      "baselineEnd": "2027-01-08",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
       "type": "task",
       "owners": [
         "s1",
@@ -485,6 +499,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:13:57.698Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Dodano zadanie 8.3 „Opracowanie wstępnego opisu działania układu” (8.01.2027–8.01.2027)"
+    },
     {
       "ts": "2026-11-13T14:12:28.912Z",
       "user": "MichalS-AI",
