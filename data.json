@@ -187,7 +187,9 @@
     {
       "type": "task",
       "owners": [
-        "s2"
+        "s1",
+        "s2",
+        "s3"
       ],
       "progress": 0,
       "notes": "Symulacja pracy linii (np. PLCSIM), poprawki programu PLC i HMI.\nSzacowany czas: 6 h.\nZależy od: 5.7.",
@@ -214,6 +216,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:36:25.972Z",
+      "user": "MichalS-AI",
+      "text": "8.1 „Testowanie i poprawki”: osoby"
+    },
     {
       "ts": "2026-11-13T13:36:08.378Z",
       "user": "MichalS-AI",
