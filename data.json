@@ -173,20 +173,6 @@
     {
       "type": "task",
       "owners": [
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2026-12-07",
-      "baselineEnd": "2027-01-15",
-      "id": "7",
-      "name": "Opis działania linii",
-      "start": "2026-12-07",
-      "end": "2027-01-15"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s2"
       ],
       "progress": 0,
@@ -228,6 +214,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:35:36.705Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 7 „Opis działania linii”"
+    },
     {
       "ts": "2026-11-13T13:35:31.175Z",
       "user": "jakubgasiorowski2lo1-pixel",
