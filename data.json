@@ -420,7 +420,7 @@
       "baselineEnd": "2027-01-22",
       "id": "8",
       "name": "Program HMI",
-      "start": "2026-11-13",
+      "start": "2026-11-20",
       "end": "2027-01-22"
     },
     {
@@ -485,6 +485,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:12:28.912Z",
+      "user": "MichalS-AI",
+      "text": "8 „Program HMI”: termin 13.11–22.01 → 20.11–22.01"
+    },
     {
       "ts": "2026-11-13T14:12:21.525Z",
       "user": "MichalS-AI",
