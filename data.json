@@ -47,20 +47,6 @@
     {
       "type": "task",
       "owners": [
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2026-11-23",
-      "baselineEnd": "2026-12-18",
-      "id": "4",
-      "name": "Kosztorys",
-      "start": "2026-11-23",
-      "end": "2026-12-18"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s2"
       ],
       "progress": 0,
@@ -242,6 +228,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:35:31.175Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 4 „Kosztorys”"
+    },
     {
       "ts": "2026-11-13T13:35:25.956Z",
       "user": "jakubgasiorowski2lo1-pixel",
