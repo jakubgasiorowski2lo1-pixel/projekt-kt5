@@ -180,18 +180,18 @@
       "end": "2026-12-11"
     },
     {
-      "id": "4.1",
-      "name": "Dobór elementów i kosztorys",
       "type": "task",
-      "start": "2026-12-04",
-      "end": "2026-12-11",
-      "baselineStart": "2026-12-04",
-      "baselineEnd": "2026-12-11",
       "owners": [
         "s5"
       ],
       "progress": 0,
-      "notes": ""
+      "notes": "",
+      "baselineStart": "2026-12-04",
+      "baselineEnd": "2026-12-11",
+      "id": "4.1",
+      "name": "Określenie wymaganych elementów",
+      "start": "2026-12-04",
+      "end": "2026-12-11"
     },
     {
       "type": "task",
@@ -463,6 +463,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:10:50.009Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "4.1 „Określenie wymaganych elementów”: nazwa"
+    },
     {
       "ts": "2026-11-13T14:10:16.695Z",
       "user": "jakubgasiorowski2lo1-pixel",
