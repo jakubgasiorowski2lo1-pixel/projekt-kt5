@@ -161,22 +161,6 @@
       "owners": [
         "s1",
         "s2",
-        "s3"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2027-01-04",
-      "baselineEnd": "2027-01-15",
-      "id": "8",
-      "name": "Symulacja i testy programu z HMI",
-      "start": "2027-01-04",
-      "end": "2027-01-15"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s1",
-        "s2",
         "s3",
         "s4",
         "s5"
@@ -260,6 +244,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:23:35.409Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 8 „Symulacja i testy programu z HMI”"
+    },
     {
       "ts": "2026-11-13T13:23:27.990Z",
       "user": "jakubgasiorowski2lo1-pixel",
