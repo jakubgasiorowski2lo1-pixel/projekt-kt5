@@ -330,16 +330,16 @@
       "end": "2027-01-08"
     },
     {
-      "id": "8.1",
-      "name": "test",
       "type": "task",
-      "start": "2026-11-13",
-      "end": "2026-11-26",
-      "baselineStart": "2026-11-13",
-      "baselineEnd": "2026-11-26",
       "owners": [],
       "progress": 0,
-      "notes": ""
+      "notes": "Zaprojektowanie poza programem - określenie ilości ekranów",
+      "baselineStart": "2026-11-20",
+      "baselineEnd": "2026-11-27",
+      "id": "8.1",
+      "name": "Zaprojektowanie wizualizacji",
+      "start": "2026-11-20",
+      "end": "2026-11-27"
     },
     {
       "type": "task",
@@ -376,6 +376,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:00:12.664Z",
+      "user": "MichalS-AI",
+      "text": "8.1 „Zaprojektowanie wizualizacji”: nazwa, termin 13.11–26.11 → 20.11–27.11 (nowy plan), notatki"
+    },
     {
       "ts": "2026-11-13T13:59:28.606Z",
       "user": "MichalS-AI",
