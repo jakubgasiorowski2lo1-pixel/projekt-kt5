@@ -47,24 +47,6 @@
     {
       "type": "task",
       "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2026-10-12",
-      "baselineEnd": "2026-10-16",
-      "id": "2.1",
-      "name": "Podział prac i harmonogram",
-      "start": "2026-10-12",
-      "end": "2026-10-16"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s5"
       ],
       "progress": 0,
@@ -323,6 +305,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:23:06.612Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 2.1 „Podział prac i harmonogram”"
+    },
     {
       "ts": "2026-11-13T13:23:01.310Z",
       "user": "jakubgasiorowski2lo1-pixel",
