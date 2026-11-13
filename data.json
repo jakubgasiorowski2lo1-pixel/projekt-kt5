@@ -205,20 +205,6 @@
       ],
       "progress": 0,
       "notes": "",
-      "baselineStart": "2026-11-02",
-      "baselineEnd": "2026-12-11",
-      "id": "6",
-      "name": "Schemat elektryczny",
-      "start": "2026-11-02",
-      "end": "2026-12-11"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s4"
-      ],
-      "progress": 0,
-      "notes": "",
       "baselineStart": "2026-11-16",
       "baselineEnd": "2026-12-18",
       "id": "6.1",
@@ -298,6 +284,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:35:01.763Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 6 „Schemat elektryczny”"
+    },
     {
       "ts": "2026-11-13T13:34:51.467Z",
       "user": "MichalS-AI",
