@@ -194,18 +194,18 @@
       "end": "2026-12-11"
     },
     {
-      "id": "4.2",
-      "name": "Dobór elementów układu",
       "type": "task",
-      "start": "2026-12-04",
-      "end": "2026-12-11",
-      "baselineStart": "2026-12-04",
-      "baselineEnd": "2026-12-11",
       "owners": [
         "s5"
       ],
       "progress": 0,
-      "notes": ""
+      "notes": "",
+      "baselineStart": "2026-12-04",
+      "baselineEnd": "2026-12-11",
+      "id": "4.2",
+      "name": "Dobór elementów układu",
+      "start": "2026-12-04",
+      "end": "2026-12-11"
     },
     {
       "type": "task",
@@ -447,9 +447,7 @@
       "owners": [
         "s1",
         "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s3"
       ],
       "progress": 0,
       "notes": "IX.",
@@ -477,6 +475,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:11:30.288Z",
+      "user": "MichalS-AI",
+      "text": "9 „Symulacja układu”: osoby"
+    },
     {
       "ts": "2026-11-13T14:11:10.751Z",
       "user": "jakubgasiorowski2lo1-pixel",
