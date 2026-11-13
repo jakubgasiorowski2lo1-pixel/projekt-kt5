@@ -331,7 +331,9 @@
     },
     {
       "type": "task",
-      "owners": [],
+      "owners": [
+        "s3"
+      ],
       "progress": 0,
       "notes": "Zaprojektowanie poza programem - określenie ilości ekranów",
       "baselineStart": "2026-11-20",
@@ -391,6 +393,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:02:50.854Z",
+      "user": "MichalS-AI",
+      "text": "8.1 „Zaprojektowanie wizualizacji”: osoby"
+    },
     {
       "ts": "2026-11-13T14:02:40.528Z",
       "user": "MichalS-AI",
