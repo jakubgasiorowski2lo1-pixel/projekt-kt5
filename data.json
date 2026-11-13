@@ -351,15 +351,14 @@
       "type": "buffer",
       "owners": [],
       "progress": 0,
-      "notes": "Rezerwa czasu. Gdy zadanie się obsuwa albo dochodzi niezaplanowane, jego dni można pokryć z tego bufora.",
+      "notes": "Rezerwa czasu na obsuwy i zadania niezaplanowane. Zużycie liczy się automatycznie w piątkach (zajęciach).",
       "baselineStart": "2027-01-11",
       "baselineEnd": "2027-01-22",
       "id": "B1",
       "name": "Bufor na obsuwy i zadania niezaplanowane",
       "start": "2027-01-18",
       "end": "2027-01-29",
-      "usedDays": 0,
-      "usage": []
+      "extraDays": 0
     }
   ],
   "history": [

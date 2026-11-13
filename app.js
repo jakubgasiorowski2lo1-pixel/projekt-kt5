@@ -86,7 +86,7 @@
       baselineStart: t.start, baselineEnd: t.end
     }, t));
     d.tasks.forEach(t => {
-      if (t.type === "buffer") { t.usedDays = t.usedDays || 0; t.usage = t.usage || []; }
+      if (t.type === "buffer") { t.extraDays = t.extraDays || 0; }
     });
     d.history = d.history || [];
     return d;
@@ -172,9 +172,8 @@
     const s = toDay(t.start), e = toDay(t.end), be = toDay(t.baselineEnd || t.end);
     const info = { slipDays: Math.max(0, e - be), lateDays: 0, expected: 0, status: "ok" };
     if (t.type === "buffer") {
-      const len = e - s + 1;
-      info.len = len;
-      info.status = t.usedDays > len ? "late" : "buffer";
+      const b = bufferState(S.data)[t.id] || { used: 0, capacity: 0 };
+      info.status = b.used > b.capacity ? "late" : "buffer";
       return info;
     }
     info.expected = today < s ? 0 : today >= e ? 100 : Math.round((today - s + 1) / (e - s + 1) * 100);
@@ -183,6 +182,57 @@
     else if (info.expected - t.progress >= CFG.riskThreshold) info.status = "risk";
     return info;
   }
+  // ---------- bufory (liczone automatycznie) ----------
+  // Jednostka: dni zajęć (piątki z project.classDays, bez project.noClassDates).
+  // Gdy projekt nie ma dni zajęć, liczone są dni kalendarzowe.
+  function countWork(d, a, b) {
+    if (a > b) return 0;
+    const cls = d.project.classDays;
+    if (!cls || !cls.length) return b - a + 1;
+    const off = d.project.noClassDates || [];
+    let n = 0;
+    for (let x = a; x <= b; x++) if (cls.includes(new Date(x * DAY).getUTCDay()) && !off.includes(fromDay(x))) n++;
+    return n;
+  }
+  const workUnit = (d, n) => (d.project.classDays && d.project.classDays.length)
+    ? `${n} ${plural(n, "piątek", "piątki", "piątków")}` : days(n);
+
+  function bufferFor(d, t, buffers) {
+    if (t.buffer === "none") return null;
+    if (t.buffer && buffers.some(b => b.id === t.buffer)) return t.buffer;
+    if (!buffers.length) return null;
+    const be = toDay(t.baselineEnd || t.end);
+    const after = buffers.find(b => toDay(b.end) >= be);
+    return (after || buffers[buffers.length - 1]).id;
+  }
+
+  /** Zużycie buforów: obsuwy (koniec później niż w planie), opóźnienie bieżące
+      (minęła data końca, a zadanie nieukończone) i zadania niezaplanowane. */
+  function bufferState(d) {
+    if (d._buf && d._bufKey === bufKey(d)) return d._buf;
+    const buffers = d.tasks.filter(t => t.type === "buffer");
+    const res = {};
+    buffers.forEach(b => res[b.id] = {
+      capacity: countWork(d, toDay(b.start), toDay(b.end)), used: b.extraDays || 0,
+      items: b.extraDays ? [{ taskId: "", name: "dodane ręcznie", days: b.extraDays, reason: "ręcznie" }] : []
+    });
+    const today = todayDay();
+    const isParent = t => d.tasks.some(x => x.id.startsWith(t.id + "."));
+    d.tasks.filter(t => t.type !== "buffer" && !isParent(t)).forEach(t => {
+      const bid = bufferFor(d, t, buffers);
+      if (!bid) return;
+      const add = (n, reason) => { if (n > 0) { res[bid].used += n; res[bid].items.push({ taskId: t.id, name: t.name, days: n, reason }); } };
+      const e = toDay(t.end), be = toDay(t.baselineEnd || t.end);
+      if (t.unplanned) add(countWork(d, toDay(t.start), e), "zadanie niezaplanowane");
+      else add(countWork(d, be + 1, e), "obsuwa terminu");
+      if (t.progress < 100 && today > e) add(countWork(d, e + 1, today), "po terminie, nieukończone");
+    });
+    Object.defineProperty(d, "_buf", { value: res, writable: true, configurable: true });
+    Object.defineProperty(d, "_bufKey", { value: bufKey(d), writable: true, configurable: true });
+    return res;
+  }
+  function bufKey(d) { return todayDay() + "|" + JSON.stringify(d.tasks) + JSON.stringify(d.project); }
+
   const STATUS_LABEL = { ok: "w toku", done: "ukończone", late: "po terminie", risk: "zagrożone", buffer: "bufor" };
 
   function person(id) { return S.data.team.find(p => p.id === id); }
@@ -254,8 +304,9 @@
     const cnt = st => infos.filter(i => i.status === st).length;
     const slip = infos.filter(i => i.slipDays > 0).length;
     const buffers = S.data.tasks.filter(t => t.type === "buffer");
-    const bufLen = buffers.reduce((a, b) => a + dayCount(b.start, b.end), 0);
-    const bufUsed = buffers.reduce((a, b) => a + (b.usedDays || 0), 0);
+    const bst = bufferState(S.data);
+    const bufLen = buffers.reduce((a, b) => a + bst[b.id].capacity, 0);
+    const bufUsed = buffers.reduce((a, b) => a + bst[b.id].used, 0);
     const box = $("#stats"); box.innerHTML = "";
     const stat = (label, value, cls = "") => el("div", { class: "stat " + cls }, el("div", { class: "v" }, value), el("div", { class: "l" }, label));
     box.append(
@@ -264,7 +315,7 @@
       stat("po terminie", cnt("late"), cnt("late") ? "bad" : ""),
       stat("zagrożone", cnt("risk"), cnt("risk") ? "warn" : ""),
       stat("z obsuwą terminu", slip, slip ? "warn" : ""),
-      stat("bufor zużyty", `${bufUsed} / ${bufLen} dni`, bufUsed > bufLen ? "bad" : bufUsed > bufLen * 0.7 ? "warn" : "")
+      stat("bufor zużyty", `${bufUsed} / ${workUnit(S.data, bufLen)}`, bufUsed > bufLen ? "bad" : bufUsed > bufLen * 0.7 ? "warn" : "")
     );
   }
 
@@ -329,11 +380,13 @@
       }
 
       if (isBuf) {
-        const len = e - s + 1, used = Math.min(t.usedDays || 0, len);
-        const bar = el("div", { class: "bar buffer" + (t.usedDays > len ? " over" : ""), style: `left:${x(s)}px;width:${len * dayW}px`,
-          title: `Bufor ${fmt(t.start)} – ${fmt(t.end)} (${days(len)})\nZużyto: ${days(t.usedDays || 0)}` });
-        bar.append(el("div", { class: "buf-used", style: `width:${used / len * 100}%` }));
-        bar.append(el("span", { class: "bar-txt" }, `${t.usedDays || 0}/${len} dni`));
+        const len = e - s + 1, b = bufferState(d)[t.id];
+        const frac = b.capacity ? Math.min(1, b.used / b.capacity) : (b.used ? 1 : 0);
+        const tipB = [`Bufor ${fmt(t.start)} – ${fmt(t.end)}: ${workUnit(d, b.capacity)}`, `Zużyto: ${workUnit(d, b.used)}, zostało: ${workUnit(d, Math.max(0, b.capacity - b.used))}`,
+          ...b.items.map(it => `• ${it.taskId} ${it.name}: ${workUnit(d, it.days)} (${it.reason})`)].join("\n");
+        const bar = el("div", { class: "bar buffer" + (b.used > b.capacity ? " over" : ""), style: `left:${x(s)}px;width:${len * dayW}px`, title: tipB });
+        bar.append(el("div", { class: "buf-used", style: `width:${frac * 100}%` }));
+        bar.append(el("span", { class: "bar-txt" }, `${b.used}/${b.capacity}`));
         track.append(bar);
       } else {
         // część planowa: od startu do min(koniec, koniec planu)
@@ -464,13 +517,15 @@
     return String((tops.length ? Math.max(...tops) : 0) + 1);
   }
 
-  function fillBufferSelect(sel, emptyText) {
+  function fillBufferSelect(sel) {
     sel.innerHTML = "";
-    sel.append(el("option", { value: "" }, emptyText));
+    const st = bufferState(S.data);
+    sel.append(el("option", { value: "" }, "automatycznie (najbliższy bufor po zadaniu)"));
     S.data.tasks.filter(t => t.type === "buffer").forEach(b => {
-      const left = dayCount(b.start, b.end) - (b.usedDays || 0);
-      sel.append(el("option", { value: b.id }, `${b.id} ${b.name} (zostało ${days(left)})`));
+      const left = st[b.id].capacity - st[b.id].used;
+      sel.append(el("option", { value: b.id }, `${b.id} ${b.name} (zostało ${workUnit(S.data, Math.max(0, left))})`));
     });
+    sel.append(el("option", { value: "none" }, "nie odliczaj od bufora"));
   }
 
   function openTask(id, newType) {
@@ -515,20 +570,20 @@
     } else $("#baselineInfo").textContent = "";
 
     // bufory
-    fillBufferSelect(f.slipBuffer, "nie, zwykła obsuwa");
-    fillBufferSelect(f.newBuffer, "nie odejmuj");
+    fillBufferSelect(f.taskBuffer);
+    f.taskBuffer.value = t && t.buffer ? t.buffer : "";
     $("#slipBox").hidden = true;
-    $("#unplannedBox").hidden = true;
     const bu = $("#bufferUsage"); bu.innerHTML = "";
     if (t && t.type === "buffer") {
-      const len = dayCount(t.start, t.end);
-      bu.append(el("p", {}, `Zużyto ${days(t.usedDays || 0)} z ${days(len)}.`));
-      if ((t.usage || []).length) {
+      const b = bufferState(S.data)[t.id];
+      bu.append(el("p", {}, `Pojemność: ${workUnit(S.data, b.capacity)} zajęć w okresie bufora. Zużyto: ${workUnit(S.data, b.used)}, zostało: ${workUnit(S.data, Math.max(0, b.capacity - b.used))}.`));
+      bu.append(el("p", { class: "small muted" }, "Zużycie liczy się samo: obsuwy terminów, zadania po terminie i zadania niezaplanowane przypisane do tego bufora."));
+      if (b.items.length) {
         const ul = el("ul", { class: "small" });
-        t.usage.forEach(u => ul.append(el("li", {}, `${fmt(u.date)}: ${u.taskId} – ${days(u.days)}${u.reason ? " (" + u.reason + ")" : ""}`)));
+        b.items.forEach(it => ul.append(el("li", {}, `${it.taskId} ${it.name}: ${workUnit(S.data, it.days)} (${it.reason})`)));
         bu.append(ul);
       }
-      if (S.token) bu.append(el("label", {}, "Ręcznie zmień zużycie (dni): ", el("input", { type: "number", name: "usedDays", min: 0, value: t.usedDays || 0, style: "width:6em" })));
+      if (S.token) bu.append(el("label", {}, "Dodatkowe zużycie wpisane ręcznie (piątki): ", el("input", { type: "number", name: "extraDays", min: 0, value: t.extraDays || 0, style: "width:6em" })));
     }
 
     [...form.querySelectorAll("input,select,textarea")].forEach(i => { if (i.name !== "type") i.disabled = readOnly; });
@@ -545,7 +600,8 @@
     if (t && t.type !== "buffer" && f.end.value && !f.rebaseline.checked) {
       const delta = toDay(f.end.value) - toDay(t.end);
       if (delta > 0) {
-        $("#slipText").textContent = `Przesuwasz koniec o ${days(delta)} później. Zostanie to pokazane jako obsuwa względem planu.`;
+        const n = countWork(S.data, toDay(t.end) + 1, toDay(f.end.value));
+        $("#slipText").textContent = `Przesuwasz koniec o ${days(delta)} później (${workUnit(S.data, n)} zajęć). Zostanie to pokazane jako obsuwa i automatycznie odliczone od bufora.`;
         $("#slipBox").hidden = false;
         return;
       }
@@ -569,16 +625,15 @@
     const hours = f.hours.value === "" ? null : Math.max(0, +f.hours.value);
     const notes = f.notes.value.trim();
     const rebase = f.rebaseline.checked;
-    const slipBuf = f.slipBuffer.value;
+    const taskBuf = f.taskBuffer.value;
     const unplanned = f.unplanned.checked;
-    const newBuf = f.newBuffer.value;
-    const usedDaysInput = f.usedDays ? +f.usedDays.value : null;
+    const extraInput = f.extraDays ? Math.max(0, +f.extraDays.value || 0) : null;
     const today = fromDay(todayDay());
 
     let text;
     if (isNew) {
       text = `${type === "buffer" ? "Dodano bufor" : "Dodano zadanie"} ${id} „${name}” (${fmt(start)}–${fmt(end)})` + (unplanned ? " [niezaplanowane]" : "");
-      if (newBuf && unplanned) text += `, pokryte z bufora ${newBuf}`;
+      if (taskBuf && type !== "buffer") text += taskBuf === "none" ? ", bez bufora" : `, bufor ${taskBuf}`;
     } else {
       const old = S.data.tasks.find(t => t.id === S.editing);
       const ch = [];
@@ -588,8 +643,8 @@
       if ((old.hours ?? null) !== hours) ch.push(`godziny → ${hours ?? "brak"}`);
       if ((old.notes || "") !== notes) ch.push("notatki");
       if ((old.owners || []).join() !== owners.join()) ch.push("osoby");
-      if (old.type === "buffer" && usedDaysInput !== null && usedDaysInput !== (old.usedDays || 0)) ch.push(`zużycie bufora → ${usedDaysInput} dni`);
-      if (slipBuf && !rebase && toDay(end) > toDay(old.end)) ch.push(`obsuwa pokryta z bufora ${slipBuf}`);
+      if (old.type === "buffer" && extraInput !== null && extraInput !== (old.extraDays || 0)) ch.push(`ręczne zużycie bufora → ${extraInput}`);
+      if (old.type !== "buffer" && (old.buffer || "") !== taskBuf) ch.push(taskBuf === "none" ? "bez bufora" : `bufor → ${taskBuf || "automatycznie"}`);
       if (!ch.length) { $("#taskDlg").close(); return; }
       text = `${id} „${name}”: ${ch.join(", ")}`;
     }
@@ -600,38 +655,30 @@
           if (data.tasks.some(t => t.id === id)) throw new Error(`Numer ${id} został w międzyczasie zajęty. Wybierz inny.`);
           const nt = { id, name, type, start, end, baselineStart: start, baselineEnd: end, owners: type === "buffer" ? [] : owners, progress: type === "buffer" ? 0 : progress, notes };
           if (hours !== null && type !== "buffer") nt.hours = hours;
-          if (type === "buffer") { nt.usedDays = 0; nt.usage = []; }
-          if (unplanned && type !== "buffer") {
-            nt.unplanned = true;
-            if (newBuf) chargeBuffer(data, newBuf, id, dayCount(start, end), "zadanie niezaplanowane", today);
+          if (type === "buffer") nt.extraDays = 0;
+          else {
+            if (unplanned) nt.unplanned = true;
+            if (taskBuf) nt.buffer = taskBuf;
           }
           data.tasks.push(nt);
         } else {
           const t = data.tasks.find(x => x.id === S.editing);
           if (!t) throw new Error("To zadanie zostało w międzyczasie usunięte.");
-          const delta = toDay(end) - toDay(t.end);
           t.name = name; t.notes = notes;
           t.start = start; t.end = end;
           if (rebase) { t.baselineStart = start; t.baselineEnd = end; }
           if (t.type === "buffer") {
-            if (usedDaysInput !== null) t.usedDays = Math.max(0, usedDaysInput);
+            if (extraInput !== null) t.extraDays = extraInput;
+            delete t.usedDays; delete t.usage;
           } else {
             t.owners = owners; t.progress = progress;
             if (hours === null) delete t.hours; else t.hours = hours;
-            if (slipBuf && !rebase && delta > 0) chargeBuffer(data, slipBuf, t.id, delta, "obsuwa", today);
+            if (taskBuf) t.buffer = taskBuf; else delete t.buffer;
           }
         }
       });
       $("#taskDlg").close();
     } catch (e) { /* komunikat już pokazany */ }
-  }
-
-  function chargeBuffer(data, bufId, taskId, n, reason, date) {
-    const b = data.tasks.find(x => x.id === bufId && x.type === "buffer");
-    if (!b) throw new Error(`Bufor ${bufId} nie istnieje.`);
-    b.usedDays = (b.usedDays || 0) + n;
-    b.usage = b.usage || [];
-    b.usage.push({ date, taskId, days: n, reason });
   }
 
   async function onDelete() {
@@ -664,7 +711,6 @@
     f.progress.addEventListener("input", () => ($("#progOut").textContent = f.progress.value + "%"));
     f.end.addEventListener("change", updateSlipBox);
     f.rebaseline.addEventListener("change", updateSlipBox);
-    f.unplanned.addEventListener("change", () => ($("#unplannedBox").hidden = !f.unplanned.checked));
     f.start.addEventListener("change", () => { if (f.end.value && f.end.value < f.start.value) f.end.value = f.start.value; });
 
     $("#loginForm").addEventListener("submit", async ev => {

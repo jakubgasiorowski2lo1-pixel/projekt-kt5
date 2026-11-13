@@ -23,8 +23,12 @@ Strona: https://jakubgasiorowski2lo1-pixel.github.io/projekt-kt5/
   Opcja „Zadanie niezaplanowane” oznacza je fioletową ramką i pozwala odjąć jego czas od bufora.
 - **+ Dodaj bufor**: rezerwa czasu na obsuwy i zadania niezaplanowane (numer `B1`, `B2`…).
 - **Przesunięcie końca zadania na później** to obsuwa: na wykresie widać przerywany prostokąt pierwotnego planu
-  i pomarańczową kreskowaną część „ponad plan”. Obsuwę można pokryć z bufora (dni zapisują się w buforze).
-  Jeśli to świadoma zmiana planu, zaznacz „To zmiana planu, nie obsuwa”.
+  i pomarańczową kreskowaną część „ponad plan”. Jeśli to świadoma zmiana planu, zaznacz „To zmiana planu, nie obsuwa”.
+- **Bufor liczy się sam**, w piątkach (dniach zajęć z `project.classDays`, bez `project.noClassDates`).
+  Pojemność = liczba piątków w okresie bufora. Zużycie = obsuwy zadań (piątki między końcem z planu a obecnym końcem)
+  + zadania po terminie i nieukończone (piątki od końca do dziś) + całe zadania niezaplanowane + ręczna korekta.
+  Liczone są tylko najniższe zadania (np. 7.4, a nie 7). Zadanie trafia do najbliższego bufora po swoim terminie,
+  chyba że w oknie zadania wybierzesz inny bufor albo „nie odliczaj”.
 
 ## Oznaczenia
 
@@ -53,4 +57,5 @@ Strona: https://jakubgasiorowski2lo1-pixel.github.io/projekt-kt5/
   "owners": ["s1", "s2"], "progress": 0, "notes": "", "unplanned": false }
 ```
 
-Bufor: `"type": "buffer"`, dodatkowo `usedDays` i `usage` (lista: data, zadanie, dni, powód).
+Opcjonalnie w zadaniu: `"hours"` (szacowany czas), `"buffer"` (id bufora albo `"none"`).
+Bufor: `"type": "buffer"`, opcjonalnie `extraDays` (ręczne zużycie w piątkach). Zużycie bufora nie jest zapisywane, strona liczy je na bieżąco.

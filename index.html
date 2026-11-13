@@ -103,16 +103,11 @@
       <label class="check only-edit"><input type="checkbox" name="rebaseline"> To zmiana planu, nie obsuwa (ustaw nowe daty jako plan bazowy)</label>
       <div class="slip-box" id="slipBox" hidden>
         <p id="slipText"></p>
-        <label>Pokryj z bufora:
-          <select name="slipBuffer"></select>
-        </label>
       </div>
-      <label class="check only-new task-only"><input type="checkbox" name="unplanned"> Zadanie niezaplanowane</label>
-      <div class="only-new task-only" id="unplannedBox" hidden>
-        <label>Odejmij czas od bufora:
-          <select name="newBuffer"></select>
-        </label>
-      </div>
+      <label class="check only-new task-only"><input type="checkbox" name="unplanned"> Zadanie niezaplanowane (cały jego czas odliczy się od bufora)</label>
+      <label class="task-only">Obsuwy tego zadania odliczaj od bufora:
+        <select name="taskBuffer"></select>
+      </label>
       <fieldset class="task-only">
         <legend>Osoby</legend>
         <div id="ownerChecks" class="owners"></div>
