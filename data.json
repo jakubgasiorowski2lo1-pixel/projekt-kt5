@@ -50,20 +50,6 @@
         "s3"
       ],
       "progress": 0,
-      "notes": "Zaprojektowanie poza programem - określenie ilości ekranów (Ekran główny, ekrany szczegółowe, koncepcja wizualna)",
-      "baselineStart": "2026-11-20",
-      "baselineEnd": "2026-11-27",
-      "id": "5.2",
-      "name": "Projekt ekranów HMI",
-      "start": "2026-11-20",
-      "end": "2026-11-27"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s3"
-      ],
-      "progress": 0,
       "notes": "Progres częściowo zależy od progresu Programu PLC",
       "baselineStart": "2026-11-27",
       "baselineEnd": "2027-01-22",
@@ -174,6 +160,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:23.458Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.2 „Projekt ekranów HMI”"
+    },
     {
       "ts": "2026-11-13T13:39:18.854Z",
       "user": "jakubgasiorowski2lo1-pixel",
