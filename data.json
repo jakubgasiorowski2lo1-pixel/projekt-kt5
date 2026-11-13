@@ -343,7 +343,9 @@
     },
     {
       "type": "task",
-      "owners": [],
+      "owners": [
+        "s3"
+      ],
       "progress": 0,
       "notes": "Implementacja zaprojektowanej wizualizacja w programie.\nProgres częściowo zależny od progresu Programu PLC.",
       "baselineStart": "2026-11-20",
@@ -389,6 +391,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:02:40.528Z",
+      "user": "MichalS-AI",
+      "text": "8.2 „Implementacja wizualizacji”: osoby"
+    },
     {
       "ts": "2026-11-13T14:02:16.254Z",
       "user": "MichalS-AI",
