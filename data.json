@@ -201,20 +201,6 @@
     {
       "type": "task",
       "owners": [
-        "s4"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2026-11-30",
-      "baselineEnd": "2027-01-08",
-      "id": "6.2",
-      "name": "Schemat hydrauliczny",
-      "start": "2026-11-30",
-      "end": "2027-01-08"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s5"
       ],
       "progress": 0,
@@ -270,6 +256,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:35:12.046Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 6.2 „Schemat hydrauliczny”"
+    },
     {
       "ts": "2026-11-13T13:35:06.598Z",
       "user": "jakubgasiorowski2lo1-pixel",
