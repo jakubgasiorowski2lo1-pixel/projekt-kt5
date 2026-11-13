@@ -81,21 +81,6 @@
       "progress": 0,
       "notes": "",
       "baselineStart": "2026-11-02",
-      "baselineEnd": "2027-01-08",
-      "id": "5",
-      "name": "Program PLC",
-      "start": "2026-11-02",
-      "end": "2027-01-08"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s1",
-        "s2"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2026-11-02",
       "baselineEnd": "2026-11-20",
       "id": "5.1",
       "name": "Konfiguracja sprzętu i mapa I/O",
@@ -305,6 +290,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:23:18.513Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5 „Program PLC”"
+    },
     {
       "ts": "2026-11-13T13:23:06.612Z",
       "user": "jakubgasiorowski2lo1-pixel",
