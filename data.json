@@ -78,7 +78,7 @@
         "s3"
       ],
       "progress": 0,
-      "notes": "",
+      "notes": "Zaprojektowanie poza programem - określenie ilości ekranów (Ekran główny, ekrany szczegółowe, koncepcja wizualna)",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-27",
       "id": "5.2",
@@ -216,6 +216,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:37:36.428Z",
+      "user": "MichalS-AI",
+      "text": "5.2 „Projekt ekranów HMI”: notatki"
+    },
     {
       "ts": "2026-11-13T13:37:14.895Z",
       "user": "Anoisek",
