@@ -92,7 +92,7 @@
         "s3"
       ],
       "progress": 0,
-      "notes": "",
+      "notes": "Progres częściowo zależy od progresu Programu PLC",
       "baselineStart": "2026-11-27",
       "baselineEnd": "2027-01-22",
       "id": "5.3",
@@ -214,6 +214,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:36:08.378Z",
+      "user": "MichalS-AI",
+      "text": "5.3 „Implementacja wizualizacji HMI”: notatki"
+    },
     {
       "ts": "2026-11-13T13:35:36.705Z",
       "user": "jakubgasiorowski2lo1-pixel",
