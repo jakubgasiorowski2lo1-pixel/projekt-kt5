@@ -167,24 +167,6 @@
       ],
       "progress": 0,
       "notes": "",
-      "baselineStart": "2027-01-20",
-      "baselineEnd": "2027-01-26",
-      "id": "11",
-      "name": "Poprawki po przeglądzie",
-      "start": "2027-01-20",
-      "end": "2027-01-26"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
       "baselineStart": "2027-01-25",
       "baselineEnd": "2027-01-29",
       "id": "12",
@@ -208,6 +190,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:23:50.073Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 11 „Poprawki po przeglądzie”"
+    },
     {
       "ts": "2026-11-13T13:23:44.632Z",
       "user": "jakubgasiorowski2lo1-pixel",
