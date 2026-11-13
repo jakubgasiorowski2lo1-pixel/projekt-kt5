@@ -66,8 +66,8 @@
       "baselineEnd": "2026-11-20",
       "id": "1",
       "name": "Przygotowanie założeń do projektu",
-      "start": "2026-11-13",
-      "end": "2026-11-13"
+      "start": "2026-11-20",
+      "end": "2026-11-20"
     },
     {
       "type": "task",
@@ -453,18 +453,18 @@
       "unplanned": true
     },
     {
-      "id": "8.3",
-      "name": "Opracowanie instrukcji HMI dla operatora",
       "type": "task",
-      "start": "2027-01-08",
-      "end": "2027-01-15",
-      "baselineStart": "2027-01-08",
-      "baselineEnd": "2027-01-15",
       "owners": [
         "s5"
       ],
       "progress": 0,
-      "notes": ""
+      "notes": "",
+      "baselineStart": "2027-01-08",
+      "baselineEnd": "2027-01-15",
+      "id": "8.3",
+      "name": "Opracowanie instrukcji HMI dla operatora",
+      "start": "2027-01-08",
+      "end": "2027-01-15"
     },
     {
       "type": "task",
@@ -513,6 +513,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:17:39.594Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "1 „Przygotowanie założeń do projektu”: termin 13.11–13.11 → 20.11–20.11 (nowy plan)"
+    },
     {
       "ts": "2026-11-13T14:17:06.403Z",
       "user": "jakubgasiorowski2lo1-pixel",
