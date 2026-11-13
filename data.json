@@ -208,18 +208,18 @@
       "end": "2026-12-11"
     },
     {
-      "id": "4.3",
-      "name": "Opracowanie kosztorysu",
       "type": "task",
-      "start": "2026-12-18",
-      "end": "2026-12-25",
-      "baselineStart": "2026-12-18",
-      "baselineEnd": "2026-12-25",
       "owners": [
         "s5"
       ],
       "progress": 0,
-      "notes": ""
+      "notes": "",
+      "baselineStart": "2026-12-18",
+      "baselineEnd": "2026-12-25",
+      "id": "4.3",
+      "name": "Opracowanie kosztorysu",
+      "start": "2026-12-18",
+      "end": "2026-12-25"
     },
     {
       "type": "task",
@@ -416,12 +416,12 @@
       ],
       "progress": 0,
       "notes": "VIII. Ekrany operatora; projekt HMI w tym samym projekcie TIA Portal.",
-      "baselineStart": "2026-12-11",
-      "baselineEnd": "2027-01-08",
+      "baselineStart": "2026-11-13",
+      "baselineEnd": "2027-01-22",
       "id": "8",
       "name": "Program HMI",
-      "start": "2026-12-11",
-      "end": "2027-01-08"
+      "start": "2026-11-13",
+      "end": "2027-01-22"
     },
     {
       "type": "task",
@@ -485,6 +485,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:12:21.525Z",
+      "user": "MichalS-AI",
+      "text": "8 „Program HMI”: termin 11.12–8.01 → 13.11–22.01 (nowy plan)"
+    },
     {
       "ts": "2026-11-13T14:12:10.766Z",
       "user": "jakubgasiorowski2lo1-pixel",
