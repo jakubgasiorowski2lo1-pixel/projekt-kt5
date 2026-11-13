@@ -461,20 +461,6 @@
       "notes": "",
       "baselineStart": "2027-01-08",
       "baselineEnd": "2027-01-08",
-      "id": "8.3",
-      "name": "Opracowanie wstępnego opisu działania układu",
-      "start": "2027-01-08",
-      "end": "2027-01-08"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
-      "baselineStart": "2027-01-08",
-      "baselineEnd": "2027-01-08",
       "id": "8.4",
       "name": "Analiza wizualizacji HMI",
       "start": "2027-01-08",
@@ -513,6 +499,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:15:48.038Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 8.3 „Opracowanie wstępnego opisu działania układu”"
+    },
     {
       "ts": "2026-11-13T14:15:23.736Z",
       "user": "MichalS-AI",
