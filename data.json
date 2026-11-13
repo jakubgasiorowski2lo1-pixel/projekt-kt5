@@ -51,20 +51,6 @@
       ],
       "progress": 0,
       "notes": "",
-      "baselineStart": "2026-10-26",
-      "baselineEnd": "2026-11-27",
-      "id": "3",
-      "name": "Dobór elementów (czujniki, napędy, sterownik)",
-      "start": "2026-10-26",
-      "end": "2026-11-27"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
       "baselineStart": "2026-11-23",
       "baselineEnd": "2026-12-18",
       "id": "4",
@@ -256,6 +242,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:35:25.956Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 3 „Dobór elementów (czujniki, napędy, sterownik)”"
+    },
     {
       "ts": "2026-11-13T13:35:12.046Z",
       "user": "jakubgasiorowski2lo1-pixel",
