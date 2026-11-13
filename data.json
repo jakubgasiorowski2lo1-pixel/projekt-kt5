@@ -66,8 +66,8 @@
       "baselineEnd": "2026-11-20",
       "id": "1",
       "name": "Przygotowanie założeń do projektu",
-      "start": "2026-11-20",
-      "end": "2026-11-20"
+      "start": "2026-11-13",
+      "end": "2026-11-13"
     },
     {
       "type": "task",
@@ -376,6 +376,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:01:18.841Z",
+      "user": "Anoisek",
+      "text": "1 „Przygotowanie założeń do projektu”: termin 20.11–20.11 → 13.11–13.11"
+    },
     {
       "ts": "2026-11-13T14:00:12.664Z",
       "user": "MichalS-AI",
