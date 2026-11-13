@@ -50,20 +50,6 @@
         "s2"
       ],
       "progress": 0,
-      "notes": "Wymaga: lista wejść i wyjść PLC (zad. V) oraz działanie siłowników i zaworów (zad. VI).\nSzacowany czas: 15 h.\nZależy od: 5.5, „V. Schemat elektryczny układu”, „VI. Schemat pneumatyczny układu”.",
-      "baselineStart": "2026-12-08",
-      "baselineEnd": "2027-01-03",
-      "id": "5.6",
-      "name": "Napisanie programu PLC",
-      "start": "2026-12-08",
-      "end": "2027-01-03"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s2"
-      ],
-      "progress": 0,
       "notes": "Szacowany czas: 4 h.\nZależy od: 5.6, „VIII. Program HMI”.",
       "baselineStart": "2027-01-03",
       "baselineEnd": "2027-01-10",
@@ -118,6 +104,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:42.810Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.6 „Napisanie programu PLC”"
+    },
     {
       "ts": "2026-11-13T13:39:36.977Z",
       "user": "jakubgasiorowski2lo1-pixel",
