@@ -152,12 +152,12 @@
       ],
       "progress": 0,
       "notes": "VI. Działanie siłowników i zaworów.",
-      "baselineStart": "2026-12-04",
-      "baselineEnd": "2026-12-11",
+      "baselineStart": "2027-01-04",
+      "baselineEnd": "2027-01-15",
       "id": "6",
       "name": "Schemat pneumatyczny układu",
-      "start": "2026-12-04",
-      "end": "2026-12-11"
+      "start": "2027-01-04",
+      "end": "2027-01-15"
     },
     {
       "type": "task",
@@ -364,6 +364,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:51:49.654Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "6 „Schemat pneumatyczny układu”: termin 4.12–11.12 → 4.01–15.01 (nowy plan)"
+    },
     {
       "ts": "2026-11-13T13:51:24.780Z",
       "user": "jakubgasiorowski2lo1-pixel",
