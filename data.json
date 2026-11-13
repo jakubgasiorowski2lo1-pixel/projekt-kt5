@@ -238,11 +238,7 @@
     {
       "type": "task",
       "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s4"
       ],
       "progress": 0,
       "notes": "VI. Działanie siłowników i zaworów.",
@@ -509,6 +505,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:18:18.167Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "6 „Schemat pneumatyczny układu”: osoby"
+    },
     {
       "ts": "2026-11-13T14:18:10.767Z",
       "user": "jakubgasiorowski2lo1-pixel",
