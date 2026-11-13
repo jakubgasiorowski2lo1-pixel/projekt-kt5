@@ -47,20 +47,6 @@
     {
       "type": "task",
       "owners": [
-        "s3"
-      ],
-      "progress": 0,
-      "notes": "Progres częściowo zależy od progresu Programu PLC",
-      "baselineStart": "2026-11-27",
-      "baselineEnd": "2027-01-22",
-      "id": "5.3",
-      "name": "Implementacja wizualizacji HMI",
-      "start": "2026-11-27",
-      "end": "2027-01-22"
-    },
-    {
-      "type": "task",
-      "owners": [
         "s2"
       ],
       "progress": 0,
@@ -160,6 +146,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:39:27.535Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 5.3 „Implementacja wizualizacji HMI”"
+    },
     {
       "ts": "2026-11-13T13:39:23.458Z",
       "user": "jakubgasiorowski2lo1-pixel",
