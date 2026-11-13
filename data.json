@@ -342,18 +342,17 @@
       "end": "2026-11-27"
     },
     {
-      "id": "8.2",
-      "name": "Implementacja wizualizacji",
       "type": "task",
-      "start": "2026-11-20",
-      "end": "2027-01-08",
-      "baselineStart": "2026-11-20",
-      "baselineEnd": "2027-01-08",
       "owners": [],
       "progress": 0,
       "notes": "Implementacja zaprojektowanej wizualizacja w programie.\nProgres częściowo zależny od progresu Programu PLC.",
-      "unplanned": true,
-      "buffer": "none"
+      "baselineStart": "2026-11-20",
+      "baselineEnd": "2027-01-08",
+      "id": "8.2",
+      "name": "Implementacja wizualizacji",
+      "start": "2026-11-20",
+      "end": "2027-01-08",
+      "unplanned": true
     },
     {
       "type": "task",
@@ -390,6 +389,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:02:16.254Z",
+      "user": "MichalS-AI",
+      "text": "8.2 „Implementacja wizualizacji”: bufor → automatycznie"
+    },
     {
       "ts": "2026-11-13T14:02:03.939Z",
       "user": "MichalS-AI",
