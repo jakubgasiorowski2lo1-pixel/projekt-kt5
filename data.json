@@ -167,24 +167,6 @@
       ],
       "progress": 0,
       "notes": "",
-      "baselineStart": "2027-01-11",
-      "baselineEnd": "2027-01-20",
-      "id": "9",
-      "name": "Integracja dokumentacji",
-      "start": "2027-01-11",
-      "end": "2027-01-20"
-    },
-    {
-      "type": "task",
-      "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
-      ],
-      "progress": 0,
-      "notes": "",
       "baselineStart": "2027-01-18",
       "baselineEnd": "2027-01-22",
       "id": "10",
@@ -244,6 +226,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T13:23:40.173Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Usunięto 9 „Integracja dokumentacji”"
+    },
     {
       "ts": "2026-11-13T13:23:35.409Z",
       "user": "jakubgasiorowski2lo1-pixel",
