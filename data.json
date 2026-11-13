@@ -208,6 +208,20 @@
       "end": "2026-12-11"
     },
     {
+      "id": "4.3",
+      "name": "Opracowanie kosztorysu",
+      "type": "task",
+      "start": "2026-12-18",
+      "end": "2026-12-25",
+      "baselineStart": "2026-12-18",
+      "baselineEnd": "2026-12-25",
+      "owners": [
+        "s5"
+      ],
+      "progress": 0,
+      "notes": ""
+    },
+    {
       "type": "task",
       "owners": [
         "s1",
@@ -471,6 +485,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-13T14:12:10.766Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "Dodano zadanie 4.3 „Opracowanie kosztorysu” (18.12.2026–25.12.2026)"
+    },
     {
       "ts": "2026-11-13T14:11:40.660Z",
       "user": "MichalS-AI",
