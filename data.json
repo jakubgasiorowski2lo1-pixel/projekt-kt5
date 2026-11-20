@@ -61,7 +61,7 @@
         "s5"
       ],
       "progress": 50,
-      "notes": "I. Sposób działania i kolejność pracy linii.",
+      "notes": "I. Sposób działania i kolejność pracy linii.\nII. Własne pomysły na usprawnienie linii\nIII. Analiza aktualnej linii",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-20",
       "id": "1",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-20T14:35:30.345Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "1 „Przygotowanie założeń do projektu”: notatki"
+    },
     {
       "ts": "2026-11-20T14:18:10.449Z",
       "user": "MichalS-AI",
