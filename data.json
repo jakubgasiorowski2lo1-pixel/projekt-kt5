@@ -417,7 +417,7 @@
       "owners": [
         "s3"
       ],
-      "progress": 0,
+      "progress": 15,
       "notes": "Zaprojektowanie poza programem - określenie ilości ekranów",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-27",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-20T13:53:53.324Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "8.1 „Zaprojektowanie wizualizacji”: postęp 0% → 15%"
+    },
     {
       "ts": "2026-11-20T13:37:48.772Z",
       "user": "jakubgasiorowski2lo1-pixel",
