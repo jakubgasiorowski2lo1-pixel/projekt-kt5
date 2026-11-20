@@ -60,7 +60,7 @@
         "s4",
         "s5"
       ],
-      "progress": 0,
+      "progress": 50,
       "notes": "I. Sposób działania i kolejność pracy linii.",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-20",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-20T13:37:13.044Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "1 „Przygotowanie założeń do projektu”: postęp 0% → 50%"
+    },
     {
       "ts": "2026-11-13T14:24:42.236Z",
       "user": "jakubgasiorowski2lo1-pixel",
