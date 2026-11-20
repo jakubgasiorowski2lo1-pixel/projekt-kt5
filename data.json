@@ -403,7 +403,7 @@
       "owners": [
         "s3"
       ],
-      "progress": 5,
+      "progress": 0,
       "notes": "VIII. Ekrany operatora; projekt HMI w tym samym projekcie TIA Portal.",
       "baselineStart": "2026-11-13",
       "baselineEnd": "2027-01-22",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-20T14:18:10.449Z",
+      "user": "MichalS-AI",
+      "text": "8 „Program HMI”: postęp 5% → 0%"
+    },
     {
       "ts": "2026-11-20T14:18:02.240Z",
       "user": "MichalS-AI",
