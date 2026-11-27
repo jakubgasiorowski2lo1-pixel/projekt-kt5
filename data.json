@@ -285,10 +285,7 @@
       "type": "task",
       "owners": [
         "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s2"
       ],
       "progress": 100,
       "notes": "20.11: 1 h, 27.11: 2 h. Wymaga wybranego sterownika (zad. 2).",
@@ -497,6 +494,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:00:39.967Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.2 „Konfiguracja projektu w TIA Portal”: osoby"
+    },
     {
       "ts": "2026-11-27T17:00:33.785Z",
       "user": "jakubgasiorowski2lo1-pixel",
