@@ -293,7 +293,7 @@
         "s4",
         "s5"
       ],
-      "progress": 0,
+      "progress": 100,
       "notes": "20.11: 1 h, 27.11: 2 h. Wymaga wybranego sterownika (zad. 2).",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-27",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T14:53:37.931Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.2 „Konfiguracja projektu w TIA Portal”: postęp 0% → 100%"
+    },
     {
       "ts": "2026-11-27T14:53:19.649Z",
       "user": "jakubgasiorowski2lo1-pixel",
