@@ -74,7 +74,6 @@
       "owners": [
         "s1",
         "s2",
-        "s3",
         "s4",
         "s5"
       ],
@@ -85,7 +84,7 @@
       "id": "2",
       "name": "Dobór elementów układu",
       "start": "2026-11-27",
-      "end": "2026-11-27"
+      "end": "2026-12-04"
     },
     {
       "type": "task",
@@ -478,6 +477,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:02:49.092Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "2 „Dobór elementów układu”: termin 27.11–27.11 → 27.11–4.12, osoby"
+    },
     {
       "ts": "2026-11-27T17:01:52.425Z",
       "user": "jakubgasiorowski2lo1-pixel",
