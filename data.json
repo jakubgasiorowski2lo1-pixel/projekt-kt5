@@ -60,7 +60,7 @@
         "s4",
         "s5"
       ],
-      "progress": 50,
+      "progress": 100,
       "notes": "I. Sposób działania i kolejność pracy linii.\nII. Własne pomysły na usprawnienie linii\nIII. Analiza aktualnej linii",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-20",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T14:54:25.985Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "1 „Przygotowanie założeń do projektu”: postęp 50% → 100%"
+    },
     {
       "ts": "2026-11-27T14:54:03.786Z",
       "user": "jakubgasiorowski2lo1-pixel",
