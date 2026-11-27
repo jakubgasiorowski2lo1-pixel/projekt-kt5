@@ -255,7 +255,7 @@
         "s1",
         "s2"
       ],
-      "progress": 0,
+      "progress": 10,
       "notes": "VII. Razem 40 h, rozłożone na piątki po ok. 5 h.",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2027-01-22",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T14:54:03.786Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7 „Program PLC”: postęp 0% → 10%"
+    },
     {
       "ts": "2026-11-27T14:53:51.278Z",
       "user": "jakubgasiorowski2lo1-pixel",
