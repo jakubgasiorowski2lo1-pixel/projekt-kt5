@@ -317,10 +317,7 @@
       "type": "task",
       "owners": [
         "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s2"
       ],
       "progress": 0,
       "notes": "4.12: 2 h, 11.12: 5 h, 18.12: 5 h, 8.01: 3 h. Wymaga listy I/O (zad. 5) i schematu pneumatycznego (zad. 6).",
@@ -491,6 +488,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:00:52.354Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.4 „Napisanie programu PLC”: osoby"
+    },
     {
       "ts": "2026-11-27T17:00:46.931Z",
       "user": "jakubgasiorowski2lo1-pixel",
