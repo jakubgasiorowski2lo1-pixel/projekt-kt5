@@ -351,9 +351,7 @@
       "owners": [
         "s1",
         "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s3"
       ],
       "progress": 0,
       "notes": "15.01: 3 h, 22.01: 3 h. Symulacja pracy linii (np. PLCSIM), poprawki PLC i HMI.",
@@ -486,6 +484,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:01:03.887Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.6 „Testowanie i poprawki”: osoby"
+    },
     {
       "ts": "2026-11-27T17:00:57.873Z",
       "user": "jakubgasiorowski2lo1-pixel",
