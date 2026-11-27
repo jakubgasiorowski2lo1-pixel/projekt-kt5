@@ -312,7 +312,7 @@
         "s4",
         "s5"
       ],
-      "progress": 0,
+      "progress": 50,
       "notes": "27.11: 3 h, 4.12: 3 h. Wymaga założeń (zad. 1).",
       "baselineStart": "2026-11-27",
       "baselineEnd": "2026-12-04",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T14:53:51.278Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.3 „Opracowanie algorytmu sterowania”: postęp 0% → 50%"
+    },
     {
       "ts": "2026-11-27T14:53:37.931Z",
       "user": "jakubgasiorowski2lo1-pixel",
