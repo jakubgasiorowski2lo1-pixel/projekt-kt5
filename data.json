@@ -301,10 +301,7 @@
       "type": "task",
       "owners": [
         "s1",
-        "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s2"
       ],
       "progress": 50,
       "notes": "27.11: 3 h, 4.12: 3 h. Wymaga założeń (zad. 1).",
@@ -494,6 +491,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:00:46.931Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.3 „Opracowanie algorytmu sterowania”: osoby"
+    },
     {
       "ts": "2026-11-27T17:00:39.967Z",
       "user": "jakubgasiorowski2lo1-pixel",
