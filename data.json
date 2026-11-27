@@ -334,9 +334,7 @@
       "owners": [
         "s1",
         "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s3"
       ],
       "progress": 0,
       "notes": "8.01: 2 h, 15.01: 2 h. Wymaga programu HMI (zad. 8).",
@@ -488,6 +486,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:00:57.873Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.5 „Połączenie programu z HMI”: osoby"
+    },
     {
       "ts": "2026-11-27T17:00:52.354Z",
       "user": "jakubgasiorowski2lo1-pixel",
