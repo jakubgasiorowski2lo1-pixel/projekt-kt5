@@ -274,7 +274,7 @@
         "s4",
         "s5"
       ],
-      "progress": 40,
+      "progress": 100,
       "notes": "20.11: 4 h",
       "baselineStart": "2026-11-20",
       "baselineEnd": "2026-11-20",
@@ -500,6 +500,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T14:53:19.649Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.1 „Analiza dokumentacji i założeń projektu”: postęp 40% → 100%"
+    },
     {
       "ts": "2026-11-20T14:35:30.345Z",
       "user": "jakubgasiorowski2lo1-pixel",
