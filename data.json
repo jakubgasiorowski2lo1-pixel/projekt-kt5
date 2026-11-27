@@ -368,9 +368,7 @@
       "owners": [
         "s1",
         "s2",
-        "s3",
-        "s4",
-        "s5"
+        "s3"
       ],
       "progress": 0,
       "notes": "22.01: 2 h",
@@ -484,6 +482,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:01:08.758Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "7.7 „Przygotowanie końcowej wersji programu”: osoby"
+    },
     {
       "ts": "2026-11-27T17:01:03.887Z",
       "user": "jakubgasiorowski2lo1-pixel",
