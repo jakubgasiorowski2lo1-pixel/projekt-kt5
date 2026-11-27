@@ -164,10 +164,6 @@
     {
       "type": "task",
       "owners": [
-        "s1",
-        "s2",
-        "s3",
-        "s4",
         "s5"
       ],
       "progress": 0,
@@ -482,6 +478,11 @@
     }
   ],
   "history": [
+    {
+      "ts": "2026-11-27T17:01:52.425Z",
+      "user": "jakubgasiorowski2lo1-pixel",
+      "text": "4 „Lista i koszty elementów układu”: osoby"
+    },
     {
       "ts": "2026-11-27T17:01:08.758Z",
       "user": "jakubgasiorowski2lo1-pixel",
